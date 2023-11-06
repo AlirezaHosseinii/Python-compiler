@@ -1,4 +1,5 @@
 from enum import Enum
+import re
 
 
 class SyntaxKind(Enum):
@@ -16,9 +17,9 @@ class SyntaxToken:
         self.text = text
 
     def getType(word):
-        if word.isdigit():
+        if re.match(r'\d+(\.\d+)?$' ,word):
             return SyntaxKind.NUMBER
-        elif word.isspace():
+        elif re.match(r'\s+$' ,word):
             return SyntaxKind.WHITESPACE
         elif word == "+":
             return SyntaxKind.PLUS_OPERATION
@@ -28,7 +29,7 @@ class SyntaxToken:
             return SyntaxKind.DIVIDE_OPERATION
         elif word == "*":
             return SyntaxKind.MULTIPLE_OPERATION
-        elif word.isalpha(): 
+        elif re.match(r'^[a-zA-Z_]\w+(\d* | [a-zA-Z_]*)?$', word): 
             return SyntaxKind.STRING
 
     def syntaxToken(self):
