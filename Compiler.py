@@ -1,5 +1,8 @@
-from LexicalAnalyzer import SyntaxToken
+from LexicalAnalyzer import LexicalAnalyzer
+from SyntaxAnalyzer import SyntaxAnalyzer
 
-line = input("Enter a line: ")
-token = SyntaxToken("" , line)
-token.syntaxToken()
+Line = input("Enter a line: ")
+lexicalAnalyzer = LexicalAnalyzer(Line)
+Lexicaltokens = lexicalAnalyzer.analyzeLine()
+syntaxAnalyzer = SyntaxAnalyzer(Lexicaltokens)
+syntaxAnalyzer.parse()

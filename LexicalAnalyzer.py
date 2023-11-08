@@ -2,7 +2,7 @@ from enum import Enum
 import re
 
 
-class SyntaxKind(Enum):
+class LexicalKind(Enum):
     NUMBER = "Number"
     WHITESPACE = "WhiteSpace"
     STRING = "String"
@@ -10,31 +10,40 @@ class SyntaxKind(Enum):
     MINUS_OPERATION = "MinusOperation" 
     DIVIDE_OPERATION = "DivideOperation"
     MULTIPLE_OPERATION = "MultipleOperation" 
+    COLON = "Colon"
+    UNDEFINED = "Undefined"
+    SPACE = "Space"
 
-class SyntaxToken:
-    def __init__(self, type, text):
-        self.type = type
+class LexicalAnalyzer:
+    def __init__(self, text):
         self.text = text
 
     def getType(word):
         if re.match(r'\d+(\.\d+)?$' ,word):
-            return SyntaxKind.NUMBER
+            return LexicalKind.NUMBER
         elif re.match(r'\s+$' ,word):
-            return SyntaxKind.WHITESPACE
+            return LexicalKind.WHITESPACE
         elif word == "+":
-            return SyntaxKind.PLUS_OPERATION
+            return LexicalKind.PLUS_OPERATION
         elif word == "-":
-            return SyntaxKind.MINUS_OPERATION
+            return LexicalKind.MINUS_OPERATION
         elif word == "/":
-            return SyntaxKind.DIVIDE_OPERATION
+            return LexicalKind.DIVIDE_OPERATION
         elif word == "*":
-            return SyntaxKind.MULTIPLE_OPERATION
+            return LexicalKind.MULTIPLE_OPERATION
+        elif word == ":":
+            return LexicalKind.COLON
         elif re.match(r'^[a-zA-Z_]\w+(\d* | [a-zA-Z_]*)?$', word): 
-            return SyntaxKind.STRING
+            return LexicalKind.STRING
+        else:
+            return LexicalKind.UNDEFINED
 
-    def syntaxToken(self):
+    def analyzeLine(self):
         words = self.text.split(" ")
+        tokens = {}
 
         for word in words:
-            token_type = SyntaxToken.getType(word)
-            print(word, ":", token_type)
+            typeOfWord = LexicalAnalyzer.getType(word)
+            tokens[word] = typeOfWord
+        
+        return tokens    
