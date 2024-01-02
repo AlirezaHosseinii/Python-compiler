@@ -3,9 +3,13 @@ import re
 
 
 class LexicalKind(Enum):
+    COMMA = ","
+    OPEN_PARANTHESIS = "("
+    CLOSE_PARANTHESIS = ")"
     NUMBER = "Number"
     WHITESPACE = "WhiteSpace"
     STRING = "String"
+    SEMI_COLON = "SemiColon"
     PLUS_OPERATION = "PlusOperation"
     EQUAL_OPERATION = "EqualOperation"
     UNEQUAL_OPERATION = "UnequalOperation"
@@ -41,6 +45,15 @@ class LexicalAnalyzer:
             return LexicalKind.MULTIPLE_OPERATION
         elif word == ":":
             return LexicalKind.COLON
+        elif word == ";":
+            return LexicalKind.SEMI_COLON
+        elif word == ",":
+            print("here")
+            return LexicalKind.COMMA
+        elif word == "(":
+            return LexicalKind.OPEN_PARANTHESIS
+        elif word == ")":
+            return LexicalKind.CLOSE_PARANTHESIS
         elif re.match(r'^[a-zA-Z_]\w*(\d* | [a-zA-Z_]*)?$', word): 
             return LexicalKind.STRING
         elif word == "==":
@@ -62,16 +75,25 @@ class LexicalAnalyzer:
 
     def analyze_line(self):
         #read, more test and meanwhile go for syntax analayzer
-        tokens_tuples = re.findall(r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s', self.text)
+        #tokens_tuples = re.findall(r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s', self.text)
+        #tokens_tuples = re.findall(r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s|(\()|(\))', self.text)
 
-        tokens_types = {}
+        print("text is: " , self.text)
+        tokens_tuples = re.findall( r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s|(\()|(\))|(,)|(;)', self.text)
+
+        tokens = []
+        
+        token_types = {}
         i = 0
+        print("token tuples is ", tokens_tuples)
         for token_tuples in tokens_tuples:
             for token in token_tuples:
                 if token:
                     type_of_token = LexicalAnalyzer.get_type(token)
                     print(f"token is {token} and type of token is {type_of_token}")
-                    tokens_types[token] = type_of_token
+                    tokens.append(token)
+                    token_types[token] = type_of_token
                     i += 1
 
-        return tokens_types
+
+        return tokens
