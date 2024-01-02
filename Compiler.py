@@ -7,14 +7,13 @@ CREATE TABLE Employees (
     EmployeeID INT,
     FirstName VARCHAR(50),
     LastName VARCHAR(50),
+    dateColumn DATE,
     Email VARCHAR(100) UNIQUE,
     DepartmentID INT,
     PRIMARY KEY (EmployeeID),
     FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
 );
 """
-    
-#support ;
 lexicalAnalyzer = LexicalAnalyzer(Line)
 Lexicaltokens = list(lexicalAnalyzer.analyze_line())
 print(f"lexical tokens: {Lexicaltokens}")

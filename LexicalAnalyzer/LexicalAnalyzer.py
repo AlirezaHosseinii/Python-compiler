@@ -85,7 +85,6 @@ class LexicalAnalyzer:
         
         token_types = {}
         i = 0
-        print("token tuples is ", tokens_tuples)
         for token_tuples in tokens_tuples:
             for token in token_tuples:
                 if token:

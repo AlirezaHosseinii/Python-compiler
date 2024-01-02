@@ -7,6 +7,7 @@ class SyntaxAnalyzer:
                                   "DATE", "FLOAT", "PRIMARY", "KEY", "FOREIGN",
                                     "REFERENCES", "NOT", "UNIQUE"]
 
+
     def consume(self):
         self.current_token = self.tokens[self.index]   
         self.index += 1
@@ -72,7 +73,7 @@ class SyntaxAnalyzer:
 
     def data_type(self):
         print(self.current_token)
-        if self.current_token in ["INT", "VARCHAR", "DATE", "FLOAT"]:  # more data types?
+        if self.current_token in ["INT", "VARCHAR", "DATE", "FLOAT"]:  # more data types? #test of date and float
             self.consume()
             print(self.current_token)
             if self.current_token == "(":
@@ -101,6 +102,7 @@ class SyntaxAnalyzer:
         self.match("(")
         self.column_list()
         self.match(")")
+        self.match(";")
 
     def parse(self):
         self.consume() 
