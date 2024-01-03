@@ -7,6 +7,7 @@ class LexicalKind(Enum):
     OPEN_PARANTHESIS = "("
     CLOSE_PARANTHESIS = ")"
     NUMBER = "Number"
+    DOT = "."
     WHITESPACE = "WhiteSpace"
     STRING = "String"
     SEMI_COLON = "SemiColon"
@@ -70,8 +71,10 @@ class LexicalAnalyzer:
             return LexicalKind.MORE_EQUAL_OPERATION
         elif word == "<=":
             return LexicalKind.LESS_EQUAL_OPERATION    
+        elif word == ".":
+            return LexicalKind.DOT
         else:
-            return LexicalKind.UNDEFINED
+            return LexicalKind.STRING
 
     def analyze_line(self):
         #read, more test and meanwhile go for syntax analayzer
@@ -79,7 +82,7 @@ class LexicalAnalyzer:
         #tokens_tuples = re.findall(r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s|(\()|(\))', self.text)
 
         print("text is: " , self.text)
-        tokens_tuples = re.findall( r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s|(\()|(\))|(,)|(;)', self.text)
+        tokens_tuples = re.findall( r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s|(\()|(\))|(,)|(;)|(.)', self.text)
 
         tokens = []
         
