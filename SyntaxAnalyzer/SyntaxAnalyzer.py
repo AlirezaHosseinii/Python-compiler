@@ -1,7 +1,7 @@
 class SyntaxAnalyzer:
     def __init__(self, tokens):
         self.tokens = tokens
-        self.current_token = None
+        self.current_token : str = None
         self.index = 0
         self.reserved_keywords = ["CREATE", "TABLE", "INT", "VARCHAR", 
                                   "DATE", "FLOAT", "PRIMARY", "KEY", "FOREIGN",
@@ -11,20 +11,27 @@ class SyntaxAnalyzer:
         self.current_token = self.tokens[self.index]   
         self.index += 1
 
+    def previous(self):
+        return self.tokens[self.index - 2]   
+
     def match(self, expected_token):    
         if self.current_token == expected_token:
             self.consume()
         else:
-               raise SyntaxError(f"Expected {expected_token} but found {self.current_token}")    
+               raise SyntaxError(f"After {self.previous()} Expected {expected_token} but found {self.current_token}")    
 
     def match_identifier(self):
         if self.current_token.isidentifier():
             if self.current_token not in self.reserved_keywords:
                 self.consume()
+                if self.current_token.upper() == "AS" :
+                    print("using AS")
+                    self.consume()
+                    self.match_identifier()
             else:
-                raise SyntaxError(f"{self.current_token} is a keyword")
+                raise SyntaxError(f"After {self.previous()} given {self.current_token} is a keyword")
         else:
-                raise SyntaxError(f"Expected identifier but found {self.current_token}")
+                raise SyntaxError(f"After {self.previous()} Expected identifier but found {self.current_token}")
 
     def constraint(self):
         print("here checking constraint: " + self.current_token)
@@ -75,8 +82,7 @@ class SyntaxAnalyzer:
                     self.constraint_list()   
 
         else:
-            raise SyntaxError(f"Unexpected token: {self.current_token}")
-
+            raise SyntaxError(f"After {self.previous()} Unexpected token: {self.current_token}")
 
     def constraint_list(self):
         if self.current_token.upper() in ["PRIMARY", "FOREIGN", "NOT", "UNIQUE"]: # more constraints? 
@@ -89,25 +95,46 @@ class SyntaxAnalyzer:
         try:
             float_token = float(self.current_token)
         except ValueError:
-            raise SyntaxError(f"{self.current_token} is not numeric")
+            raise SyntaxError(f"After {self.previous()} {self.current_token} is not numeric")
         self.consume()
 
-
     def data_type(self):
-        if self.current_token.upper() in ["INT", "VARCHAR", "DATE", "FLOAT"]:  # more data types? #test of date and float
+        if self.current_token.upper() in ["INT", "VARCHAR", "DATE", "FLOAT", "DECIMAL"]:  # more data types? #test of date and float
             self.consume()
             if self.current_token == "(":
                 self.match("(")
                 self.check_numeric()
                 self.match(")")
         else:
-            raise SyntaxError(f"Unexpected token: {self.current_token}")
+            raise SyntaxError(f"After {self.previous()} Unexpected token: {self.current_token}")
 
-
+    def column_constraint(self):
+        if not self.current_token == ",":
+            if self.current_token == "PRIMARY":
+                self.match("PRIMARY")
+                self.match("KEY")
+            elif self.current_token == "FOREIGN":
+                self.match("FOREIGN")
+                self.match("KEY")
+                self.match("REFERENCES")
+                self.match_identifier()
+                self.match("(")
+                self.match_identifier()
+                self.match(")")
+            elif self.current_token == "NOT":
+                self.match("NOT")
+                self.match("NULL")
+            elif self.current_token == "UNIQUE" :
+                self.match("UNIQUE")
+            elif self.current_token == "DEFAULT" :
+                self.consume()
+                self.check_numeric()
+        
     def column_def(self):
         self.match_identifier()
         self.data_type()
-        self.constraint_list()
+        while not self.current_token == "," :
+            self.column_constraint()
 
     def column_list(self):
         self.column_def()
@@ -116,7 +143,7 @@ class SyntaxAnalyzer:
             if not self.current_token.upper() in ["PRIMARY", "FOREIGN", "NOT", "UNIQUE"]:
                 self.column_def()
             else:
-                self.constraint_list()    
+                break 
 
     def statement(self):
         self.match("CREATE")
@@ -124,11 +151,12 @@ class SyntaxAnalyzer:
         self.match_identifier()
         self.match("(")
         self.column_list()
+        self.constraint_list()
         self.match(")")
         if self.current_token == ";":
             print("Accepted.")
         else:
-            raise SyntaxError(f"Not finishing with ; and finished with {self.current_token}" )    
+            raise SyntaxError(f"After {self.previous()} Not finishing with ; and finished with {self.current_token}" )    
 
     def parse(self):
         self.consume() 
