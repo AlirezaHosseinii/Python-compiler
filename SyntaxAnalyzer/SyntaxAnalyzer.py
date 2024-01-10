@@ -24,10 +24,7 @@ class SyntaxAnalyzer:
         if self.current_token.isidentifier():
             if self.current_token not in self.reserved_keywords:
                 self.consume()
-                if self.current_token.upper() == "AS" :
-                    print("using AS")
-                    self.consume()
-                    self.match_identifier()
+                
             else:
                 raise SyntaxError(f"After {self.previous()} given {self.current_token} is a keyword")
         else:
