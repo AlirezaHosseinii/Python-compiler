@@ -11,16 +11,15 @@ class SqlIdleGUI:
         self.root.geometry('800x600')
 
         self.mode = tk.StringVar()
-        self.mode.set('light')  # Initial mode: light
+        self.mode.set('light')
 
-        # Color settings for dark and light modes
         self.dark_bg_color = 'black'
         self.light_bg_color = 'white'
         self.button_color = 'light blue'
         self.hover_color = 'yellow'
 
         self.notebook = ttk.Notebook(self.root)
-        self.notebook.pack(fill='both', expand=True, side='left')  # Placing the notebook on the left side
+        self.notebook.pack(fill='both', expand=True, side='left')
 
         self.tree_page = ttk.Frame(self.notebook)
         self.result_page = ttk.Frame(self.notebook)
@@ -31,7 +30,6 @@ class SqlIdleGUI:
         self.create_widgets(self.tree_page, self.result_page)
 
     def create_widgets(self, tree_page, result_page):
-        # Tree page widgets
         self.tree = ttk.Treeview(tree_page)
         self.tree["columns"] = ("1", "2")
         self.tree.column("#0", width=100, minwidth=100, anchor='w')
@@ -42,7 +40,6 @@ class SqlIdleGUI:
         self.tree.heading("2", text="Value", anchor='w')
         self.tree.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
 
-        # Result page widgets
         self.query_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
         self.query_text.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
 
@@ -54,18 +51,14 @@ class SqlIdleGUI:
         self.result_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
         self.result_text.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
 
-        # Error text widget
         self.error_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
         self.error_text.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
 
-        # SQLite database connection
         self.conn = sqlite3.connect(':memory:')
         self.cursor = self.conn.cursor()
 
-        # Bind the exit event to handle KeyboardInterrupt
         self.root.bind('<Control-c>', self.on_exit)
 
-        # Add File menu
         menuBar = Menu(self.root)
         fileBar = Menu(menuBar, tearoff=0)
         fileBar.add_command(label='Open', command=self.openSqlFile)
@@ -75,7 +68,6 @@ class SqlIdleGUI:
         fileBar.add_command(label='Exit', command=self.exitProgram)
         menuBar.add_cascade(label='File', menu=fileBar)
 
-        # Add Edit menu
         editBar = Menu(menuBar, tearoff=0)
         editBar.add_command(label='Copy', command=self.copyText, accelerator='Ctrl+C')
         editBar.add_command(label='Paste', command=self.pasteText, accelerator='Ctrl+V')
@@ -88,16 +80,14 @@ class SqlIdleGUI:
         editBar.add_command(label='Find', command=self.findText, accelerator='Ctrl+F')
         editBar.add_command(label='Find and Replace', command=self.findReplaceText, accelerator='Ctrl+H')
         menuBar.add_cascade(label='Edit', menu=editBar)
-        self.root.bind('<Control-f>', self.findText)  # Adding shortcut Ctrl + F for find text
-        self.root.bind('<Control-h>', self.findReplaceText)  # Adding shortcut Ctrl + H for find and replace text
+        self.root.bind('<Control-f>', self.findText)
+        self.root.bind('<Control-h>', self.findReplaceText)
 
-        # Add Run menu
         runBar = Menu(menuBar, tearoff=0)
         runBar.add_command(label='Run Code', command=self.runCode, accelerator='Ctrl+R')
         menuBar.add_cascade(label='Run', menu=runBar)
-        self.root.bind('<Control-r>', self.runCode)  # Adding shortcut Ctrl + R for run code
+        self.root.bind('<Control-r>', self.runCode)
 
-        # Add Mode menu
         modeBar = Menu(menuBar, tearoff=0)
         modeBar.add_radiobutton(label='Dark Mode', variable=self.mode, value='dark', command=self.toggle_mode)
         modeBar.add_radiobutton(label='Light Mode', variable=self.mode, value='light', command=self.toggle_mode)
@@ -105,23 +95,20 @@ class SqlIdleGUI:
 
         self.root.config(menu=menuBar)
 
-        # Default color settings
         self.toggle_mode()
 
     def toggle_mode(self):
         current_mode = self.mode.get()
         if current_mode == 'dark':
-            # Settings for dark mode
             self.root.configure(bg=self.dark_bg_color)
-            self.tree.configure(style='Dark.Treeview')  # Setting style for Treeview
-            self.query_text.configure(bg=self.dark_bg_color, fg='white')  # Setting background color and text color for ScrolledText
-            self.result_text.configure(bg=self.dark_bg_color, fg='white')  # Setting background color and text color for ScrolledText
+            self.tree.configure(style='Dark.Treeview')
+            self.query_text.configure(bg=self.dark_bg_color, fg='white')
+            self.result_text.configure(bg=self.dark_bg_color, fg='white')
         else:
-            # Settings for light mode
             self.root.configure(bg=self.light_bg_color)
-            self.tree.configure(style='Light.Treeview')  # Setting style for Treeview
-            self.query_text.configure(bg=self.light_bg_color, fg='black')  # Setting background color and text color for ScrolledText
-            self.result_text.configure(bg=self.light_bg_color, fg='black')  # Setting background color and text color for ScrolledText
+            self.tree.configure(style='Light.Treeview')
+            self.query_text.configure(bg=self.light_bg_color, fg='black')
+            self.result_text.configure(bg=self.light_bg_color, fg='black')
 
     def execute_query(self):
         query = self.query_text.get("1.0", tk.END)
@@ -205,11 +192,9 @@ class SqlIdleGUI:
             pass
 
     def findText(self, event=None):
-        # Your find text implementation here
         pass
 
     def findReplaceText(self, event=None):
-        # Your find and replace text implementation here
         pass
 
     def on_button_hover(self, event):
