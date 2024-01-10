@@ -3,9 +3,13 @@ class SyntaxAnalyzer:
         self.tokens = tokens
         self.current_token : str = None
         self.index = 0
-        self.reserved_keywords = ["CREATE", "TABLE", "INT", "VARCHAR", 
-                                  "DATE", "FLOAT", "PRIMARY", "KEY", "FOREIGN",
-                                    "REFERENCES", "NOT", "UNIQUE"]
+        self.reserved_keywords = sql_reserved_keywords = [
+            "SELECT", "INSERT", "UPDATE", "DELETE", "CREATE", "DROP", "ALTER",
+            "JOIN", "INNER", "LEFT", "RIGHT", "FULL", "WHERE", "GROUP BY", "ORDER BY",
+            "HAVING", "UNION", "ALL", "AND", "OR", "NOT", "NULL", "TRUE", "FALSE",
+            "BETWEEN", "LIKE", "AS", "ON", "IS", "IN", "EXISTS", "CASE", "WHEN",
+            "THEN", "ELSE", "END", "DISTINCT", "TOP", "LIMIT", "AUTO_INCREMENT", "SERIAL", "ROWNUM", "SYSDATE", "CURRENT_TIMESTAMP",
+            "IDENTITY", "NOCHECK", "CASCADE", "FOR"]
 
     def consume(self):
         self.current_token = self.tokens[self.index]   
@@ -24,14 +28,12 @@ class SyntaxAnalyzer:
         if self.current_token.isidentifier():
             if self.current_token not in self.reserved_keywords:
                 self.consume()
-                
             else:
                 raise SyntaxError(f"After {self.previous()} given {self.current_token} is a keyword")
         else:
                 raise SyntaxError(f"After {self.previous()} Expected identifier but found {self.current_token}")
 
     def constraint(self):
-        print("here checking constraint: " + self.current_token)
         if self.current_token == "PRIMARY":
             self.match("PRIMARY")
             self.match("KEY")
