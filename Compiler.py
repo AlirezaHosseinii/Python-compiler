@@ -11,14 +11,15 @@ CREATE TABLE Employees (
     dateColumn DATE,
     Email VARCHAR(100),
     DepartmentID INT,
-    DepartmentID UNIQUE,
     PRIMARY KEY (EmployeeID),
     FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
 );
 """
 
 Line2 = "CREATE TABLE Users (ID INT, Name VARCHAR(50));"
-Line3 = "CREATE TABLE Orders (OrderID INT PRIMARY KEY, ProductName VARCHAR(100), Quantity INT);"
+Line3 = """
+CREATE TABLE Orders (OrderID INT PRIMARY KEY, ProductName VARCHAR(100), Quantity INT);
+"""
 Line4 = "CREATE TABLE Products (ProductID INT UNIQUE, ProductName VARCHAR(100));"
 Line5 = "CREATE TABLE Orders (OrderID INT, CustomerID INT FOREIGN KEY REFERENCES Customers(CustomerID));"
 Line6 = "CREATE TABLE Employees (EmployeeID INT DEFAULT 1001, Name VARCHAR(50));"
@@ -56,7 +57,7 @@ CREATE TABLE Customers (CustomerID INT INDEX, Name VARCHAR(100), Address VARCHAR
 
 #if table exists
 
-lexicalAnalyzer = LexicalAnalyzer(Line1)
+lexicalAnalyzer = LexicalAnalyzer(Line3)
 Lexicaltokens = list(lexicalAnalyzer.analyze_line())
 print(f"lexical tokens: {Lexicaltokens}")
 syntaxAnalyzer = SyntaxAnalyzer(Lexicaltokens)
