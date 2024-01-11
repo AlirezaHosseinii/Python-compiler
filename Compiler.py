@@ -56,7 +56,7 @@ CREATE TABLE Customers (CustomerID INT INDEX, Name VARCHAR(100), Address VARCHAR
 
 #if table exists
 
-lexicalAnalyzer = LexicalAnalyzer(Line1)
+lexicalAnalyzer = LexicalAnalyzer(Line2)
 Lexicaltokens = list(lexicalAnalyzer.analyze_line())
 print(f"lexical tokens: {Lexicaltokens}")
 syntaxAnalyzer = SyntaxAnalyzer(Lexicaltokens)
