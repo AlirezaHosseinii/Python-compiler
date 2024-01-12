@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import sqlite3
+from LexicalAnalyzer.LexicalAnalyzer import LexicalAnalyzer
 
 class SqlIdleGUI:
     def __init__(self, root):
