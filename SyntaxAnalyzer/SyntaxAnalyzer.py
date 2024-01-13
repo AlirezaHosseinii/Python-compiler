@@ -30,26 +30,16 @@ class SyntaxAnalyzer:
         if self.current_token.upper() == str(expected_token).upper():
             self.consume()
         else:
-<<<<<<< HEAD
-               raise SyntaxError(f"{self.previous()} Expected {expected_token} but found {self.current_token}")    
-=======
                self.error_messages.append(f"After {self.previous()} Expected {expected_token} but found {self.current_token}")    
->>>>>>> 0352f86b6b0c1b6c1c00e13e72cfe5e301438f17
 
     def match_identifier(self):
         if self.current_token.isidentifier():
             if self.current_token not in self.reserved_keywords:
                 self.consume()
             else:
-<<<<<<< HEAD
-                raise SyntaxError(f"{self.previous()} given {self.current_token} is a keyword")
-        else:
-            raise SyntaxError(f"{self.previous()} Expected identifier but found {self.current_token}")
-=======
                 self.error_messages.append(f"After {self.previous()} given {self.current_token} is a keyword")
         else:
                  self.error_messages.append(f"After {self.previous()} Expected identifier but found {self.current_token}")
->>>>>>> 0352f86b6b0c1b6c1c00e13e72cfe5e301438f17
 
     def constraint(self):
         if self.current_token == "PRIMARY":
@@ -102,11 +92,7 @@ class SyntaxAnalyzer:
                     self.constraint_list()   
 
         else:
-<<<<<<< HEAD
-            raise SyntaxError(f"{self.previous()} Unexpected token: {self.current_token}")
-=======
             self.error_messages.append(f"After {self.previous()} Unexpected token: {self.current_token}")
->>>>>>> 0352f86b6b0c1b6c1c00e13e72cfe5e301438f17
 
     def constraint_list(self):
         if self.current_token.upper() in ["PRIMARY", "FOREIGN", "NOT", "UNIQUE"]: # more constraints? 
@@ -120,11 +106,7 @@ class SyntaxAnalyzer:
         try:
             float_token = float(self.current_token)
         except ValueError:
-<<<<<<< HEAD
-            raise SyntaxError(f"{self.previous()} {self.current_token} is not numeric")
-=======
              self.error_messages.append(f"After {self.previous()} {self.current_token} is not numeric")
->>>>>>> 0352f86b6b0c1b6c1c00e13e72cfe5e301438f17
         self.consume()
 
     def data_type(self):
@@ -136,11 +118,7 @@ class SyntaxAnalyzer:
                 print(f"here is{self.current_token.upper()}")
                 self.match(")")
         else:
-<<<<<<< HEAD
-            raise SyntaxError(f"{self.previous()} Unexpected token: {self.current_token}")
-=======
              self.error_messages.append(f"After {self.previous()} Unexpected token: {self.current_token}")
->>>>>>> 0352f86b6b0c1b6c1c00e13e72cfe5e301438f17
 
     def column_constraint(self):
         if not self.current_token == ",":
@@ -194,16 +172,6 @@ class SyntaxAnalyzer:
         if self.current_token == ";":
             return "Accepted."
         else:
-<<<<<<< HEAD
-            raise SyntaxError(f"{self.previous()} Not finishing with ; and finished with {self.current_token}" )    
-
-    def parse(self):
-        self.consume()
-        self.statement()
-    
-
-    "create table users (id int, name varchar(50) defalut 'bye bye);"
-=======
              self.error_messages.append(f"After {self.previous()} Not finishing with ; and finished with {self.current_token}")  
 
     def parse(self):
@@ -213,4 +181,3 @@ class SyntaxAnalyzer:
         else:
             return self.error_messages[0]
     
->>>>>>> 0352f86b6b0c1b6c1c00e13e72cfe5e301438f17
