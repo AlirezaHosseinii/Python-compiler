@@ -1,0 +1,123 @@
+import sys
+sys.path.insert(1, 'LexicalAnalyzer')
+from LexicalAnalyzer import LexicalAnalyzer
+sys.path.insert(1, 'SyntaxAnalyzer')
+from SyntaxAnalyzer import SyntaxAnalyzer
+
+class AlterTableSyntaxAnalyzer:
+    def __init__(self, tokens):
+        self.tokens = tokens
+        self.current_token = ""
+        self.index = 0
+        self.error_messages = []
+        self.reserved_keywords = [
+            "ALTER", "TABLE", "ADD", "DROP", "MODIFY", "RENAME", "CONSTRAINT", "FOREIGN", "PRIMARY", "KEY", 
+            "UNIQUE", "INDEX", "COLUMN", "REFERENCES", "CHECK"
+        ]
+        
+    def consume(self):
+        self.current_token = str(self.tokens[self.index]).upper()
+        self.index += 1
+
+    def previous(self):
+        return self.tokens[self.index - 2]
+
+    def match(self, expected_token):
+        if self.current_token.upper() == str(expected_token).upper():
+            self.consume()
+        else:
+            self.error_messages.append(f"After {self.previous()} Expected {expected_token} but found {self.current_token}")
+
+    def match_identifier(self):
+        if self.current_token.isidentifier():
+            if self.current_token not in self.reserved_keywords:
+                self.consume()
+            else:
+                self.error_messages.append(f"After {self.previous()} Given {self.current_token} is a reserved keyword")
+        else:
+            self.error_messages.append(f"After {self.previous()} Expected identifier but found {self.current_token}")
+
+    def alter_table_statement(self):
+        self.match("ALTER")
+        self.match("TABLE")
+        self.match_identifier()
+        self.alter_commands()
+
+    def alter_commands(self):
+        while self.current_token:
+            if self.current_token == "ADD":
+                self.match("ADD")
+                self.add_command()
+            elif self.current_token == "DROP":
+                self.match("DROP")
+                self.drop_command()
+            elif self.current_token == "MODIFY":
+                self.match("MODIFY")
+                self.modify_command()
+            elif self.current_token == "RENAME":
+                self.match("RENAME")
+                self.rename_command()
+            else:
+                self.error_messages.append(f"After {self.previous()} Unexpected token: {self.current_token}")
+                break
+
+    def add_command(self):
+        if self.current_token == "COLUMN":
+            self.match("COLUMN")
+            self.column_definition()
+        elif self.current_token in ["CONSTRAINT", "FOREIGN", "PRIMARY", "UNIQUE"]:
+            self.constraint_definition()
+        else:
+            self.error_messages.append(f"After {self.previous()} Unexpected token: {self.current_token}")
+
+    def drop_command(self):
+        if self.current_token == "COLUMN":
+            self.match("COLUMN")
+            self.match_identifier()
+        elif self.current_token == "CONSTRAINT":
+            self.match("CONSTRAINT")
+            self.match_identifier()
+        else:
+            self.error_messages.append(f"After {self.previous()} Unexpected token: {self.current_token}")
+
+    def modify_command(self):
+        if self.current_token == "COLUMN":
+            self.match("COLUMN")
+            self.column_definition()
+        else:
+            self.error_messages.append(f"After {self.previous()} Unexpected token: {self.current_token}")
+
+    def rename_command(self):
+        if self.current_token == "COLUMN":
+            self.match("COLUMN")
+            self.match_identifier()
+            self.match("TO")
+            self.match_identifier()
+        else:
+            self.error_messages.append(f"After {self.previous()} Unexpected token: {self.current_token}")
+
+    def column_definition(self):
+        self.match_identifier()
+        # Additional checks for column definition can be added here
+
+    def constraint_definition(self):
+        if self.current_token in ["PRIMARY", "FOREIGN", "UNIQUE", "CHECK"]:
+            self.match(self.current_token)
+            # Additional checks for constraint definition can be added here
+        else:
+            self.error_messages.append(f"After {self.previous()} Unexpected token: {self.current_token}")
+
+    def parse(self):
+        self.consume()
+        self.alter_table_statement()
+        if not self.error_messages:
+            return "Accepted."
+        else:
+            return self.error_messages[0]
+
+Command  = " ALTER TABLE Employees ADD COLUMN DateOfBirth INT;"
+lexicalAnalyzer = LexicalAnalyzer(Command)
+Lexicaltokens = list(lexicalAnalyzer.analyze_line())
+print(f"lexical tokens: {Lexicaltokens}")
+syntaxAnalyzer = AlterTableSyntaxAnalyzer(Lexicaltokens)
+print(syntaxAnalyzer.parse())
