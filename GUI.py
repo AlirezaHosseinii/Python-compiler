@@ -3,12 +3,20 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import sqlite3
+<<<<<<< HEAD:GUI.py
 from LexicalAnalyzer.LexicalAnalyzer import LexicalAnalyzer
+=======
+import sys
+sys.path.insert(1, 'LexicalAnalyzer')
+from LexicalAnalyzer import LexicalAnalyzer
+sys.path.insert(1, 'SyntaxAnalyzer')
+from SyntaxAnalyzer import SyntaxAnalyzer
+>>>>>>> 0352f86b6b0c1b6c1c00e13e72cfe5e301438f17:GUI/GUI.py
 
 class SqlIdleGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("SQL IDE")
+        self.root.title("SQL COMPILER")
         self.root.geometry('800x600')
 
         self.mode = tk.StringVar()
@@ -154,15 +162,23 @@ class SqlIdleGUI:
 
     def runCode(self, event=None):
         query = self.query_text.get("1.0", tk.END)
-        try:
-            self.cursor.execute(query)
-            result = self.cursor.fetchall()
+        # try:
+        #     self.cursor.execute(query)
+        #     result = self.cursor.fetchall()
 
-            self.result_text.delete(1.0, tk.END)
-            self.result_text.insert(tk.END, str(result))
-        except Exception as e:
-            self.result_text.delete(1.0, tk.END)
-            self.result_text.insert(tk.END, f"Error: {str(e)}")
+        #     self.result_text.delete(1.0, tk.END)
+        #     self.result_text.insert(tk.END, str(result))
+        # except Exception as e:
+        #     self.result_text.delete(1.0, tk.END)
+        #     self.result_text.insert(tk.END, f"ErrorS: {str(e)}")
+        
+        lexicalAnalyzer = LexicalAnalyzer(query)
+        Lexicaltokens = list(lexicalAnalyzer.analyze_line())
+        syntaxAnalyzer = SyntaxAnalyzer(Lexicaltokens)
+        result = syntaxAnalyzer.parse()
+        print(f"result is {result}")
+        self.result_text.insert(tk.END, result)
+
 
     def copyText(self):
         self.query_text.clipboard_clear()
