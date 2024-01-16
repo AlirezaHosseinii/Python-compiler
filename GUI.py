@@ -3,15 +3,11 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import sqlite3
-<<<<<<< HEAD:GUI.py
-from LexicalAnalyzer.LexicalAnalyzer import LexicalAnalyzer
-=======
 import sys
 sys.path.insert(1, 'LexicalAnalyzer')
 from LexicalAnalyzer import LexicalAnalyzer
 sys.path.insert(1, 'SyntaxAnalyzer')
 from SyntaxAnalyzer import SyntaxAnalyzer
->>>>>>> 0352f86b6b0c1b6c1c00e13e72cfe5e301438f17:GUI/GUI.py
 
 class SqlIdleGUI:
     def __init__(self, root):

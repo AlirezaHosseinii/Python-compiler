@@ -1,6 +1,5 @@
 from LexicalAnalyzer.LexicalAnalyzer import LexicalAnalyzer
 from SyntaxAnalyzer.SyntaxAnalyzer import SyntaxAnalyzer
-from SyntaxAnalyzer.SyntaxAnalyzer import salam
 
 #Line = input("Enter a line: ")
 
@@ -58,11 +57,7 @@ CREATE TABLE Customers (CustomerID INT INDEX, Name VARCHAR(100), Address VARCHAR
 
 #if table exists
 
-<<<<<<< HEAD
-lexicalAnalyzer = LexicalAnalyzer(Line1)
-=======
 lexicalAnalyzer = LexicalAnalyzer(Line7)
->>>>>>> 0352f86b6b0c1b6c1c00e13e72cfe5e301438f17
 Lexicaltokens = list(lexicalAnalyzer.analyze_line())
 print(f"lexical tokens: {Lexicaltokens}")
 syntaxAnalyzer = SyntaxAnalyzer(Lexicaltokens)
