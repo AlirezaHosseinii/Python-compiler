@@ -1,10 +1,10 @@
-class SyntaxAnalyzer:
+class CreateTableSyntaxAnalyzer:
     def __init__(self, tokens):
         self.tokens = tokens
         self.current_token : str = ""
         self.index = 0
         self.error_messages = []
-        self.reserved_keywords = sql_reserved_keywords = [
+        self.reserved_keywords = [
             "SELECT", "INSERT", "UPDATE", "DELETE", "CREATE", "DROP", "ALTER",
             "JOIN", "INNER", "LEFT", "RIGHT", "FULL", "WHERE", "GROUP BY", "ORDER BY",
             "HAVING", "UNION", "ALL", "AND", "OR", "NOT", "NULL", "TRUE", "FALSE",
@@ -14,12 +14,10 @@ class SyntaxAnalyzer:
 
  
     def consume(self):
-        # if self.tokens[self.index]:
         try:
             self.current_token = str(self.tokens[self.index]).upper()
             print("current token: ", self.current_token , "index: ", self.index)
             self.index += 1
-        #copilot i want to handle index out of range exception
         except IndexError:
             raise SyntaxError(f"Unexpected end of input")
 
@@ -184,7 +182,6 @@ class SyntaxAnalyzer:
         if self.statement() == "Accepted.":
             return "Accepted."
         else:
-            # return self.error_messages[0]
             raise SyntaxError(f"Error : Not accepted , Why ? ")
 
     

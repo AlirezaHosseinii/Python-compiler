@@ -1,7 +1,7 @@
 class InsertCommandSyntaxAnalyzer:
     def __init__(self, tokens):
         self.tokens = tokens
-        self.current_token = ""
+        self.current_token : str = ""
         self.index = 0
         self.error_messages = []
         self.reserved_keywords = [
@@ -14,59 +14,83 @@ class InsertCommandSyntaxAnalyzer:
         ]
 
     def consume(self):
-        self.current_token = str(self.tokens[self.index]).upper()
-        print("Current token:", self.current_token, "Index:", self.index)
-        self.index += 1
+        try:
+            self.current_token = str(self.tokens[self.index]).upper()
+            print("current token: ", self.current_token , "index: ", self.index)
+            self.index += 1
+        except IndexError:
+            raise SyntaxError(f"Unexpected end of input")
 
     def previous(self):
-        return self.tokens[self.index - 2]
+        try :
+            return f'After  "{self.tokens[self.index - 2]}" '   
+        except IndexError:
+            return None
 
-    def match(self, expected_token):
+    def match(self, expected_token):    
         if self.current_token.upper() == str(expected_token).upper():
             self.consume()
         else:
-            self.error_messages.append(f"After {self.previous()} Expected {expected_token} but found {self.current_token}")
+               raise SyntaxError(f'{self.previous()} Expected  "{expected_token}"  but found  "{self.current_token}" ')    
 
     def match_identifier(self):
         if self.current_token.isidentifier():
             if self.current_token not in self.reserved_keywords:
                 self.consume()
             else:
-                self.error_messages.append(f"After {self.previous()} {self.current_token} is a reserved keyword")
+                raise SyntaxError(f'{self.previous()} given  "{self.current_token}"  is a keyword')
         else:
-            self.error_messages.append(f"After {self.previous()} Expected identifier but found {self.current_token}")
+                raise SyntaxError(f'{self.previous()} Expected identifier but found  "{self.current_token}" ')
 
-    def values_list(self):
+    def column_list(self):
+        column_count = 0
         if self.current_token == "(":
             self.consume()
-            while self.current_token != ")":
-                self.match_identifier()  # Assuming that values will be identifiers
-                if self.current_token == ",":
-                    self.consume()
+            self.match_identifier()
+            column_count += 1
+            while self.current_token == ",":
+                self.consume()
+                self.match_identifier()
+                column_count += 1
             self.match(")")
+        return column_count
+
+    def values_list(self,column_count):
+        counter = 0
+        while self.current_token == "(":
+            self.consume()
+            self.match_identifier()
+            counter +=1
+            while self.current_token != ")":
+                self.match(",")
+                self.match_identifier()
+                counter +=1
+            if counter != column_count:
+                raise SyntaxError(f"Expected {column_count} values but found {counter} .LOC : {self.previous()} ")
+            self.match(")")
+            if self.current_token == ",":
+                self.consume()
+                counter = 0
+            elif self.current_token == ";":
+                return 
         else:
-            self.error_messages.append(f"After {self.previous()} Expected ( but found {self.current_token}")
+            raise SyntaxError(f"{self.previous()} Expected ( but found {self.current_token}")
 
     def insert_statement(self):
         self.match("INSERT")
         self.match("INTO")
         self.match_identifier()
-        self.match("(")
-        self.match_identifier()  # Assuming the first identifier corresponds to a column name
-        while self.current_token == ",":
-            self.consume()
-            self.match_identifier()
-        self.match(")")
+        column_count = self.column_list()
         self.match("VALUES")
-        self.values_list()
+        self.values_list(column_count)
         if self.current_token == ";":
             return "Accepted."
         else:
-            self.error_messages.append(f"After {self.previous()} Not finishing with ; and finished with {self.current_token}")
+            raise SyntaxError(f"{self.previous()} Not finishing with ; and finished with {self.current_token}")
 
     def parse(self):
         self.consume()
         if self.insert_statement() == "Accepted.":
             return "Accepted."
         else:
-            return self.error_messages[0]
+            raise SyntaxError(f"Error : Not accepted , Why ? ")

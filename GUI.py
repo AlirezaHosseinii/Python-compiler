@@ -8,7 +8,10 @@ import time
 sys.path.insert(1, 'LexicalAnalyzer')
 from LexicalAnalyzer import LexicalAnalyzer
 sys.path.insert(1, 'SyntaxAnalyzer')
-from SyntaxAnalyzer import SyntaxAnalyzer
+sys.path.insert(1,'InsertCommandSyntaxAnalyzer')
+from SyntaxAnalyzer import InsertCommandSyntaxAnalyzer
+
+from SyntaxAnalyzer import CreateTableSyntaxAnalyzer
 from tests import get_tests
 
 class SqlIdleGUI:
@@ -170,7 +173,12 @@ class SqlIdleGUI:
             lexicalAnalyzer = LexicalAnalyzer(query)
             Lexicaltokens = list(lexicalAnalyzer.analyze_line())
             print("Lexicaltokens are : ", Lexicaltokens)
-            syntaxAnalyzer = SyntaxAnalyzer(Lexicaltokens)
+            if "insert" in query.lower() :
+                self.result_text.insert(tk.END, "checking insert query   :  ")
+                syntaxAnalyzer = InsertCommandSyntaxAnalyzer.InsertCommandSyntaxAnalyzer(Lexicaltokens)
+            else:
+                self.result_text.insert(tk.END, "checking create query   :  ")
+                syntaxAnalyzer = CreateTableSyntaxAnalyzer.CreateTableSyntaxAnalyzer(Lexicaltokens)
             result = syntaxAnalyzer.parse()
             print(f"result is {result}")
             self.result_text.insert(tk.END, result)
