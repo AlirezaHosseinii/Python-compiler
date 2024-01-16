@@ -4,17 +4,19 @@ from tkinter import ttk, scrolledtext
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import sqlite3
 import sys
+import time
 sys.path.insert(1, 'LexicalAnalyzer')
 from LexicalAnalyzer import LexicalAnalyzer
 sys.path.insert(1, 'SyntaxAnalyzer')
 from SyntaxAnalyzer import SyntaxAnalyzer
+from tests import get_tests
 
 class SqlIdleGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("SQL COMPILER")
         self.root.geometry('800x600')
-
+        self.test_value = 0
         self.mode = tk.StringVar()
         self.mode.set('light')
 
@@ -47,17 +49,22 @@ class SqlIdleGUI:
 
         self.query_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
         self.query_text.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
-
-        self.execute_button = tk.Button(result_page, text="Run Code", command=self.runCode, bg=self.button_color, width=100, height=2)
-        self.execute_button.grid(row=1, column=0, pady=10)
-        self.execute_button.bind("<Enter>", self.on_button_hover)
-        self.execute_button.bind("<Leave>", self.on_button_leave)
+        
+        self.execute_button = tk.Button(result_page, text="Run Code", command=self.runCode, bg=self.button_color, width=50, height=2)
+        self.execute_button.grid(row=1,column=0) 
+        self.execute_button.bind("<Enter>", self.on_execute_button_hover)
+        self.execute_button.bind("<Leave>", self.on_excute_button_leave)
+        
+        self.test_button = tk.Button(result_page, text="Run TEST", command=self.runTests, bg=self.button_color, width=50, height=2)
+        self.test_button.grid(row=1,column=1) 
+        self.test_button.bind("<Enter>", self.on_test_button_hover)
+        self.test_button.bind("<Leave>", self.on_test_button_leave)
 
         self.result_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
         self.result_text.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
 
-        self.error_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
-        self.error_text.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
+        # self.error_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
+        # self.error_text.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
 
         self.conn = sqlite3.connect(':memory:')
         self.cursor = self.conn.cursor()
@@ -124,8 +131,8 @@ class SqlIdleGUI:
             self.result_text.delete(1.0, tk.END)
             self.result_text.insert(tk.END, str(result))
         except Exception as e:
-            self.error_text.delete(1.0, tk.END)
-            self.error_text.insert(tk.END, f"Error: {str(e)}")
+            self.result_text.delete(1.0, tk.END)
+            self.result_text.insert(tk.END, f"Error: {str(e)}")
 
     def on_exit(self, event):
         self.conn.close()
@@ -157,24 +164,44 @@ class SqlIdleGUI:
         self.root.destroy()
 
     def runCode(self, event=None):
-        query = self.query_text.get("1.0", tk.END)
-        # try:
-        #     self.cursor.execute(query)
-        #     result = self.cursor.fetchall()
+        try:
+            self.result_text.delete(1.0, tk.END)
+            query = self.query_text.get("1.0", tk.END)
+            lexicalAnalyzer = LexicalAnalyzer(query)
+            Lexicaltokens = list(lexicalAnalyzer.analyze_line())
+            print("Lexicaltokens are : ", Lexicaltokens)
+            syntaxAnalyzer = SyntaxAnalyzer(Lexicaltokens)
+            result = syntaxAnalyzer.parse()
+            print(f"result is {result}")
+            self.result_text.insert(tk.END, result)
+        except Exception as e:
+            self.show_error(e)
 
-        #     self.result_text.delete(1.0, tk.END)
-        #     self.result_text.insert(tk.END, str(result))
-        # except Exception as e:
-        #     self.result_text.delete(1.0, tk.END)
-        #     self.result_text.insert(tk.END, f"ErrorS: {str(e)}")
-        
-        lexicalAnalyzer = LexicalAnalyzer(query)
-        Lexicaltokens = list(lexicalAnalyzer.analyze_line())
-        syntaxAnalyzer = SyntaxAnalyzer(Lexicaltokens)
-        result = syntaxAnalyzer.parse()
-        print(f"result is {result}")
-        self.result_text.insert(tk.END, result)
+    def runTests(self, event=None):
+        self.query_text.delete(1.0, tk.END)
+        self.result_text.delete(1.0, tk.END)
+        try:
+            tests = get_tests()
+            if self.test_value == len(tests):
+                return
+            query = tests[self.test_value]["TEST" + str(self.test_value+1)]
+            print("checking test",self.test_value , "  : " ,query )
+            self.query_text.insert(tk.END, query)
+            self.runCode()
+            self.test_value+=1
+            self.root.after(5000, self.re_run_code)
+        except Exception as e:
+            self.show_error(e)
 
+
+    def re_run_code(self):
+        self.query_text.delete(1.0, tk.END)
+        self.result_text.delete(1.0, tk.END)
+
+    def show_error(self, error):
+        print("i got error: ", error)
+        self.result_text.insert(tk.END, f"Error: {str(error)}")
+        self.root.after(10000, self.re_run_code)
 
     def copyText(self):
         self.query_text.clipboard_clear()
@@ -210,13 +237,16 @@ class SqlIdleGUI:
     def findReplaceText(self, event=None):
         pass
 
-    def on_button_hover(self, event):
+    def on_execute_button_hover(self, event):
         self.execute_button.configure(bg=self.hover_color)
 
-    def on_button_leave(self, event):
+    def on_excute_button_leave(self, event):
         self.execute_button.configure(bg=self.button_color)
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = SqlIdleGUI(root)
-    root.mainloop()
+    def on_test_button_hover(self, event):
+        self.test_button.configure(bg=self.hover_color)
+
+    def on_test_button_leave(self, event):
+        self.test_button.configure(bg=self.button_color)
+
+
