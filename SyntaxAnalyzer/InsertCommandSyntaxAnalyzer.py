@@ -9,10 +9,21 @@ class InsertCommandSyntaxAnalyzer:
             "ORDER BY", "HAVING", "UNION", "ALL", "AND", "OR", "NOT", "NULL",
             "TRUE", "FALSE", "BETWEEN", "LIKE", "AS", "ON", "IS", "IN", "EXISTS",
             "CASE", "WHEN", "THEN", "ELSE", "END", "DISTINCT", "TOP", "LIMIT",
-            "AUTO_INCREMENT", "SERIAL", "ROWNUM", "SYSDATE", "CURRENT_TIMESTAMP",
+            "AUTO_INCREMENT", "SERIAL", "ROWNUM", "SYSDATE",
             "IDENTITY", "NOCHECK", "CASCADE", "FOR"
-        ]
-
+            ]
+        self.one_word_keywords = ['DEFAULT','UUID','USER','SYSDATE','RAND','AUTO_INCREMENT','NULL','TRUE','FALSE'
+            ]
+        self.no_input_keywords = ['NOW','UNIX_TIMESTAMP','CURDATE','CURTIME','UTC_DATE','UTC_TIME','UTC_TIMESTAMP','LAST_INSERT_ID','ROW_COUNT',
+            ]
+        self.one_input_keywords = ['MD5','SHA1','SHA256','SHA512','AES_ENCRYPT','AES_DECRYPT',
+            'PASSWORD','ENCRYPT','DECRYPT','COMPRESS','UNCOMPRESS','GREATEST','LEAST','CONV',
+            'COUNT','AVG','SUM','MIN','MAX','STD','STDDEV','STDDEV_POP','STDDEV_SAMP','VAR_POP',     
+            ]
+        self.two_input_keywords = ['POWER','MOD',
+            ]
+        self.some_input_keywords_for_value_list = ['CONCAT']
+        
     def consume(self):
         try:
             self.current_token = str(self.tokens[self.index]).upper()
@@ -33,8 +44,42 @@ class InsertCommandSyntaxAnalyzer:
         else:
                raise SyntaxError(f'{self.previous()} Expected  "{expected_token}"  but found  "{self.current_token}" ')    
 
-    def match_identifier(self):
-        if self.current_token.isidentifier():
+    def match_keyword_as_column(self):
+        if self.current_token.isnumeric():
+            self.consume()
+        elif self.current_token in self.one_word_keywords:
+            self.consume()
+        elif self.current_token in self.no_input_keywords:
+            self.consume()
+            self.match("(")
+            self.match(")")
+        elif self.current_token in self.one_input_keywords:
+            self.consume()
+            self.match("(")
+            self.match_identifier(can_column=True)
+            self.match(")")
+        elif self.current_token in self.two_input_keywords:
+            self.consume()
+            self.match("(")
+            self.match_identifier(can_column=True)
+            self.match(",")
+            self.match_identifier(can_column=True)
+            self.match(")")
+        elif self.current_token in self.some_input_keywords_for_value_list:
+            self.consume()
+            self.match("(")
+            self.match_identifier(can_column=True)
+            while self.current_token == ",":
+                self.consume()
+                self.match_identifier(can_column=True)
+            self.match(")")
+        else : 
+            self.match_identifier()
+
+    def match_identifier(self,can_column=False):
+        if can_column :
+            self.match_keyword_as_column()
+        elif self.current_token.isidentifier():
             if self.current_token not in self.reserved_keywords:
                 self.consume()
             else:
@@ -59,11 +104,11 @@ class InsertCommandSyntaxAnalyzer:
         counter = 0
         while self.current_token == "(":
             self.consume()
-            self.match_identifier()
+            self.match_identifier(can_column=True)
             counter +=1
             while self.current_token != ")":
                 self.match(",")
-                self.match_identifier()
+                self.match_identifier(can_column=True)
                 counter +=1
             if counter != column_count:
                 raise SyntaxError(f"Expected {column_count} values but found {counter} .LOC : {self.previous()} ")
@@ -74,7 +119,7 @@ class InsertCommandSyntaxAnalyzer:
             elif self.current_token == ";":
                 return 
         else:
-            raise SyntaxError(f"{self.previous()} Expected ( but found {self.current_token}")
+            raise SyntaxError(f"In Value Lists : {self.previous()} Expected ( but found {self.current_token}")
 
     def insert_statement(self):
         self.match("INSERT")

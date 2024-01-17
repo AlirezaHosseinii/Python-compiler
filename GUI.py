@@ -189,7 +189,7 @@ class SqlIdleGUI:
         self.query_text.delete(1.0, tk.END)
         self.result_text.delete(1.0, tk.END)
         try:
-            tests = get_tests()
+            tests = get_tests("insert")
             if self.test_value == len(tests):
                 return
             query = tests[self.test_value]["TEST" + str(self.test_value+1)]
@@ -197,7 +197,6 @@ class SqlIdleGUI:
             self.query_text.insert(tk.END, query)
             self.runCode()
             self.test_value+=1
-            self.root.after(5000, self.re_run_code)
         except Exception as e:
             self.show_error(e)
 
@@ -209,7 +208,6 @@ class SqlIdleGUI:
     def show_error(self, error):
         print("i got error: ", error)
         self.result_text.insert(tk.END, f"Error: {str(error)}")
-        self.root.after(10000, self.re_run_code)
 
     def copyText(self):
         self.query_text.clipboard_clear()
