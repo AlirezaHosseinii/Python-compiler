@@ -176,9 +176,11 @@ class SqlIdleGUI:
             if "insert" in query.lower() :
                 self.result_text.insert(tk.END, "checking insert query   :  ")
                 syntaxAnalyzer = InsertCommandSyntaxAnalyzer.InsertCommandSyntaxAnalyzer(Lexicaltokens)
-            else:
+            elif "create" in query.lower():
                 self.result_text.insert(tk.END, "checking create query   :  ")
                 syntaxAnalyzer = CreateTableSyntaxAnalyzer.CreateTableSyntaxAnalyzer(Lexicaltokens)
+            else :
+                self.show_error(f"The term '{Lexicaltokens[0]}' is not supported by this compiler .")
             result = syntaxAnalyzer.parse()
             print(f"result is {result}")
             self.result_text.insert(tk.END, result)
