@@ -39,6 +39,7 @@ class SqlIdleGUI:
 
         self.create_widgets(self.tree_page, self.result_page)
 
+
     def create_widgets(self, tree_page, result_page):
         self.tree = ttk.Treeview(tree_page)
         self.tree["columns"] = ("1", "2")
@@ -48,24 +49,27 @@ class SqlIdleGUI:
         self.tree.heading("#0", text="ID", anchor='w')
         self.tree.heading("1", text="Name", anchor='w')
         self.tree.heading("2", text="Value", anchor='w')
-        self.tree.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
+        self.tree.grid(row=0, column=0, padx=10, pady=10, columnspan=2, sticky="nsew")
 
         self.query_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
-        self.query_text.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
+        self.query_text.grid(row=0, column=0, padx=10, pady=10, columnspan=2, sticky="nsew")
         
         self.execute_button = tk.Button(result_page, text="Run Code", command=self.runCode, bg=self.button_color, width=50, height=2)
-        self.execute_button.grid(row=1,column=0) 
-        self.execute_button.bind("<Enter>", self.on_execute_button_hover)
-        self.execute_button.bind("<Leave>", self.on_excute_button_leave)
+        self.execute_button.grid(row=1, column=0, columnspan=2, sticky="nsew")  # Set columnspan to 2
         
         self.test_button = tk.Button(result_page, text="Run TEST", command=self.runTests, bg=self.button_color, width=50, height=2)
-        self.test_button.grid(row=1,column=1) 
-        self.test_button.bind("<Enter>", self.on_test_button_hover)
-        self.test_button.bind("<Leave>", self.on_test_button_leave)
+        self.test_button.grid(row=2, column=0, columnspan=2, sticky="nsew")  # Set columnspan to 2
 
         self.result_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
-        self.result_text.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
+        self.result_text.grid(row=3, column=0, padx=10, pady=10, columnspan=2, sticky="nsew")  # Set columnspan to 2
 
+        # Configure row and column weights to make the widgets expand
+        result_page.grid_rowconfigure(0, weight=1)
+        result_page.grid_rowconfigure(1, weight=0)  # Adjusted weight
+        result_page.grid_rowconfigure(2, weight=0)  # Adjusted weight
+        result_page.grid_rowconfigure(3, weight=1)
+        result_page.grid_columnconfigure(0, weight=1)
+        result_page.grid_columnconfigure(1, weight=1)  # Added weight for the second column
         # self.error_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
         # self.error_text.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
 
