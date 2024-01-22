@@ -36,12 +36,10 @@ tests = {"tests" : [
 ,{"TEST10" : """CREATE TABLE Customers (CustomerID INT INDEX, Name VARCHAR(100), Address VARCHAR(200));""","status" : False}
 ],
 "insert" : [
-    {"TEST1" : """
-    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
+    {"TEST1" : """INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
     DEFALUT
     , 1);""","status" : False}
-    ,{"TEST2" : """
-    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
+    ,{"TEST2" : """INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
     NOW
     , 1);""","status" : False}
     ,{"TEST3" : """
