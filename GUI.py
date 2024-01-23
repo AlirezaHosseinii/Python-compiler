@@ -4,16 +4,18 @@ from tkinter import ttk, scrolledtext
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import sqlite3
 import sys
-import time
+
 sys.path.insert(1, 'LexicalAnalyzer')
 from LexicalAnalyzer import LexicalAnalyzer
+
 sys.path.insert(1, 'SyntaxAnalyzer')
-sys.path.insert(1,'InsertCommandSyntaxAnalyzer')
+sys.path.insert(1, 'InsertCommandSyntaxAnalyzer')
 from SyntaxAnalyzer import InsertCommandSyntaxAnalyzer
 
 from SyntaxAnalyzer import CreateTableSyntaxAnalyzer
 from tests import get_tests
 from tkinter.colorchooser import askcolor
+
 
 class SqlIdleGUI:
     def __init__(self, root):
@@ -56,27 +58,28 @@ class SqlIdleGUI:
         self.tree_page = ttk.Frame(self.notebook)
         self.result_page = ttk.Frame(self.notebook)
 
-        self.execute_button = tk.Button(result_page, text="Run Code", command=self.runCode, bg=self.button_color, width=50, height=2)
+        self.execute_button = tk.Button(result_page, text="Run Code", command=self.runCode, bg=self.button_color,
+                                        width=50, height=2)
         self.execute_button.bind("<Enter>", self.on_execute_button_hover)
         self.execute_button.bind("<Leave>", self.on_excute_button_leave)
-        self.execute_button.grid(row=1, column=0, columnspan=2, sticky="nsew")  
-        
-        self.test_button = tk.Button(result_page, text="Run TEST", command=self.runTests, bg=self.button_color, width=50, height=2)
+        self.execute_button.grid(row=1, column=0, columnspan=2, sticky="nsew")
+
+        self.test_button = tk.Button(result_page, text="Run TEST", command=self.runTests, bg=self.button_color,
+                                     width=50, height=2)
         self.test_button.bind("<Enter>", self.on_test_button_hover)
         self.test_button.bind("<Leave>", self.on_test_button_leave)
-        self.test_button.grid(row=2, column=0, columnspan=2, sticky="nsew")  
+        self.test_button.grid(row=2, column=0, columnspan=2, sticky="nsew")
 
         self.result_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
-        self.result_text.grid(row=3, column=0, padx=10, pady=10, columnspan=2, sticky="nsew")  
-        
-        
+        self.result_text.grid(row=3, column=0, padx=10, pady=10, columnspan=2, sticky="nsew")
+
         result_page.grid_rowconfigure(0, weight=1)
-        result_page.grid_rowconfigure(1, weight=0)  
-        result_page.grid_rowconfigure(2, weight=0)  
+        result_page.grid_rowconfigure(1, weight=0)
+        result_page.grid_rowconfigure(2, weight=0)
         result_page.grid_rowconfigure(3, weight=1)
         result_page.grid_columnconfigure(0, weight=1)
-        result_page.grid_columnconfigure(1, weight=1)  
-        
+        result_page.grid_columnconfigure(1, weight=1)
+
         self.conn = sqlite3.connect(':memory:')
         self.cursor = self.conn.cursor()
 
@@ -85,8 +88,8 @@ class SqlIdleGUI:
         menuBar = Menu(self.root)
         fileBar = Menu(menuBar, tearoff=0)
         fileBar.add_command(label='Open', command=self.openSqlFile)
-        fileBar.add_command(label='Save', command=self.saveSqlFileAs)
-        fileBar.add_command(label='SaveAs', command=self.saveSqlFileAs)
+        fileBar.add_command(label='Save', command=self.saveSqlFile, accelerator='Ctrl+S')
+        fileBar.add_command(label='Save As', command=self.saveSqlFileAs, accelerator='Ctrl+Shift+S')
         fileBar.add_separator()
         fileBar.add_command(label='Exit', command=self.exitProgram)
         menuBar.add_cascade(label='File', menu=fileBar)
@@ -165,19 +168,21 @@ class SqlIdleGUI:
                 sql_code = file.read()
                 self.query_text.delete('1.0', END)
                 self.query_text.insert('1.0', sql_code)
-                global gpath
-                gpath = path
+
+    def saveSqlFile(self):
+        if not hasattr(self, 'current_file_path') or self.current_file_path is None:
+            self.saveSqlFileAs()
+        else:
+            with open(self.current_file_path, 'w') as file:
+                file.write(self.query_text.get("1.0", tk.END))
 
     def saveSqlFileAs(self):
-        global gpath
-        if gpath == '':
-            path = asksaveasfilename(filetypes=[('SQL Files', '*.sql')])
-        else:
-            path = gpath
+        file_path = asksaveasfilename(defaultextension=".sql", filetypes=[('SQL Files', '*.sql')])
 
-        with open(path, 'w', encoding='utf-8') as file:
-            sql_code = self.query_text.get('1.0', END)
-            file.write(sql_code)
+        if file_path:
+            with open(file_path, 'w') as file:
+                file.write(self.query_text.get("1.0", tk.END))
+            self.current_file_path = file_path
 
     def exitProgram(self):
         self.root.destroy()
@@ -190,7 +195,7 @@ class SqlIdleGUI:
             Lexicaltokens = list(lexicalAnalyzer.analyze_line())
             print("Lexicaltokens are : ", Lexicaltokens)
             result = ""
-            if Lexicaltokens[0].lower() == "insert" :
+            if Lexicaltokens[0].lower() == "insert":
                 self.result_text.insert(tk.END, "checking insert query   :  ")
                 syntaxAnalyzer = InsertCommandSyntaxAnalyzer.InsertCommandSyntaxAnalyzer(Lexicaltokens)
                 result = syntaxAnalyzer.parse()
@@ -198,9 +203,9 @@ class SqlIdleGUI:
                 self.result_text.insert(tk.END, "checking create query   :  ")
                 syntaxAnalyzer = CreateTableSyntaxAnalyzer.CreateTableSyntaxAnalyzer(Lexicaltokens)
                 result = syntaxAnalyzer.parse()
-            else :
-                self.show_error(f"The term '{Lexicaltokens[0]}' is not supported by this compiler .")
-            
+            else:
+                self.show_error(f"The term '{Lexicaltokens[0]}' is not supported by this compiler.")
+
             print(f"result is {result}")
             self.result_text.insert(tk.END, result)
         except Exception as e:
@@ -213,14 +218,13 @@ class SqlIdleGUI:
             tests = get_tests("insert")
             if self.test_value == len(tests):
                 return
-            query = tests[self.test_value]["TEST" + str(self.test_value+1)]
-            print("checking test",self.test_value , "  : " ,query )
+            query = tests[self.test_value]["TEST" + str(self.test_value + 1)]
+            print("checking test", self.test_value, "  :  ", query)
             self.query_text.insert(tk.END, query.strip())
             self.runCode()
-            self.test_value+=1
+            self.test_value += 1
         except Exception as e:
             self.show_error(e)
-
 
     def re_run_code(self):
         self.query_text.delete(1.0, tk.END)
@@ -276,3 +280,8 @@ class SqlIdleGUI:
     def on_test_button_leave(self, event):
         self.test_button.configure(bg=self.button_color)
 
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = SqlIdleGUI(root)
+    root.mainloop()
