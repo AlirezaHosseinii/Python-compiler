@@ -52,25 +52,31 @@ class SqlIdleGUI:
         self.tree.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
 
         self.query_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
-        self.query_text.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
-        
+        self.query_text.grid(row=0, column=0, padx=10, pady=10, columnspan=2, sticky="nsew")
+        self.tree_page = ttk.Frame(self.notebook)
+        self.result_page = ttk.Frame(self.notebook)
+
         self.execute_button = tk.Button(result_page, text="Run Code", command=self.runCode, bg=self.button_color, width=50, height=2)
-        self.execute_button.grid(row=1,column=0) 
         self.execute_button.bind("<Enter>", self.on_execute_button_hover)
         self.execute_button.bind("<Leave>", self.on_excute_button_leave)
+        self.execute_button.grid(row=1, column=0, columnspan=2, sticky="nsew")  
         
         self.test_button = tk.Button(result_page, text="Run TEST", command=self.runTests, bg=self.button_color, width=50, height=2)
-        self.test_button.grid(row=1,column=1) 
         self.test_button.bind("<Enter>", self.on_test_button_hover)
         self.test_button.bind("<Leave>", self.on_test_button_leave)
-        self.result_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12), background='lightgray')
+        self.test_button.grid(row=2, column=0, columnspan=2, sticky="nsew")  
 
-        # self.result_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
-        self.result_text.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
-
-        # self.error_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
-        # self.error_text.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
-
+        self.result_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
+        self.result_text.grid(row=3, column=0, padx=10, pady=10, columnspan=2, sticky="nsew")  
+        
+        
+        result_page.grid_rowconfigure(0, weight=1)
+        result_page.grid_rowconfigure(1, weight=0)  
+        result_page.grid_rowconfigure(2, weight=0)  
+        result_page.grid_rowconfigure(3, weight=1)
+        result_page.grid_columnconfigure(0, weight=1)
+        result_page.grid_columnconfigure(1, weight=1)  
+        
         self.conn = sqlite3.connect(':memory:')
         self.cursor = self.conn.cursor()
 
@@ -127,13 +133,13 @@ class SqlIdleGUI:
         if current_mode == 'dark':
             self.root.configure(bg=self.dark_bg_color)
             self.tree.configure(style='Dark.Treeview')
-            self.query_text.configure(bg=self.dark_bg_color, fg='white')
-            self.result_text.configure(bg=self.dark_bg_color, fg='white')
+            self.query_text.configure(bg="#1e1e1e", fg='#365570')
+            self.result_text.configure(bg="#1e1e1e", fg='#365570')
         else:
-            self.root.configure(bg=self.light_bg_color)
+            self.root.configure(bg='#1e1e1e')
             self.tree.configure(style='Light.Treeview')
-            self.query_text.configure(bg=self.light_bg_color, fg='black')
-            self.result_text.configure(bg=self.light_bg_color, fg='black')
+            self.query_text.configure(bg="white", fg='blue')
+            self.result_text.configure(bg="white", fg='red')
 
     def execute_query(self):
         query = self.query_text.get("1.0", tk.END)
@@ -178,35 +184,38 @@ class SqlIdleGUI:
 
     def runCode(self, event=None):
         try:
-            self.result_text.delete(0, tk.END)
+            self.result_text.delete(1.0, tk.END)
             query = self.query_text.get("1.0", tk.END)
-            lexicalAnalyzer = LexicalAnalyzer(query)
+            lexicalAnalyzer = LexicalAnalyzer(query.strip())
             Lexicaltokens = list(lexicalAnalyzer.analyze_line())
             print("Lexicaltokens are : ", Lexicaltokens)
-            if "insert" in query.lower() :
+            result = ""
+            if Lexicaltokens[0].lower() == "insert" :
                 self.result_text.insert(tk.END, "checking insert query   :  ")
                 syntaxAnalyzer = InsertCommandSyntaxAnalyzer.InsertCommandSyntaxAnalyzer(Lexicaltokens)
-            elif "create" in query.lower():
+                result = syntaxAnalyzer.parse()
+            elif Lexicaltokens[0].lower() == "create":
                 self.result_text.insert(tk.END, "checking create query   :  ")
                 syntaxAnalyzer = CreateTableSyntaxAnalyzer.CreateTableSyntaxAnalyzer(Lexicaltokens)
+                result = syntaxAnalyzer.parse()
             else :
                 self.show_error(f"The term '{Lexicaltokens[0]}' is not supported by this compiler .")
-            result = syntaxAnalyzer.parse()
+            
             print(f"result is {result}")
             self.result_text.insert(tk.END, result)
         except Exception as e:
             self.show_error(e)
 
     def runTests(self, event=None):
-        self.query_text.delete(0, tk.END)
-        self.result_text.delete(0, tk.END)
+        self.query_text.delete(1.0, tk.END)
+        self.result_text.delete(1.0, tk.END)
         try:
             tests = get_tests("insert")
             if self.test_value == len(tests):
                 return
             query = tests[self.test_value]["TEST" + str(self.test_value+1)]
             print("checking test",self.test_value , "  : " ,query )
-            self.query_text.insert(tk.END, query)
+            self.query_text.insert(tk.END, query.strip())
             self.runCode()
             self.test_value+=1
         except Exception as e:
@@ -266,5 +275,4 @@ class SqlIdleGUI:
 
     def on_test_button_leave(self, event):
         self.test_button.configure(bg=self.button_color)
-
 
