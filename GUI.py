@@ -13,6 +13,7 @@ from SyntaxAnalyzer import InsertCommandSyntaxAnalyzer
 
 from SyntaxAnalyzer import CreateTableSyntaxAnalyzer
 from tests import get_tests
+from tkinter.colorchooser import askcolor
 
 class SqlIdleGUI:
     def __init__(self, root):
@@ -39,7 +40,6 @@ class SqlIdleGUI:
 
         self.create_widgets(self.tree_page, self.result_page)
 
-
     def create_widgets(self, tree_page, result_page):
         self.tree = ttk.Treeview(tree_page)
         self.tree["columns"] = ("1", "2")
@@ -49,7 +49,7 @@ class SqlIdleGUI:
         self.tree.heading("#0", text="ID", anchor='w')
         self.tree.heading("1", text="Name", anchor='w')
         self.tree.heading("2", text="Value", anchor='w')
-        self.tree.grid(row=0, column=0, padx=10, pady=10, columnspan=2, sticky="nsew")
+        self.tree.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
 
         self.query_text = scrolledtext.ScrolledText(result_page, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
         self.query_text.grid(row=0, column=0, padx=10, pady=10, columnspan=2, sticky="nsew")
@@ -99,6 +99,8 @@ class SqlIdleGUI:
         editBar.add_command(label='Undo', command=self.undoText, accelerator='Ctrl+Z')
         editBar.add_command(label='Redo', command=self.redoText, accelerator='Ctrl+Y')
         editBar.add_separator()
+        editBar.add_command(label='Change Background Color', command=self.change_background)
+
         editBar.add_command(label='Horizontal Line', command=lambda: self.insertText('\n---\n'))
         editBar.add_command(label='Find', command=self.findText, accelerator='Ctrl+F')
         editBar.add_command(label='Find and Replace', command=self.findReplaceText, accelerator='Ctrl+H')
@@ -119,6 +121,12 @@ class SqlIdleGUI:
         self.root.config(menu=menuBar)
 
         self.toggle_mode()
+
+    def change_background(self):
+        color = askcolor()[1]  # askcolor returns a tuple (rgb, hex), we need the hex value
+        if color:
+            self.result_text.config(background=color)
+
 
     def toggle_mode(self):
         current_mode = self.mode.get()
