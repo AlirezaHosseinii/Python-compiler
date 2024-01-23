@@ -125,8 +125,8 @@ class SqlIdleGUI:
         if current_mode == 'dark':
             self.root.configure(bg=self.dark_bg_color)
             self.tree.configure(style='Dark.Treeview')
-            self.query_text.configure(bg="#1e1e1e", fg='#365570')
-            self.result_text.configure(bg="#1e1e1e", fg='#365570')
+            self.query_text.configure(bg="#1e1e1e", fg='#05C3DD')
+            self.result_text.configure(bg="#1e1e1e", fg='#05C3DD')
         else:
             self.root.configure(bg='#1e1e1e')
             self.tree.configure(style='Light.Treeview')
