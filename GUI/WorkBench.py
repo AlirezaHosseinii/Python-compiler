@@ -11,8 +11,9 @@ from tkinter.colorchooser import askcolor
 
 class WorkBenchClass:
 
-    def __init__(self, notebook):
+    def __init__(self, notebook,menuBar):
         self.notebook = notebook
+        self.menuBar =menuBar
         self.create_workbench_tab()
 
     def create_workbench_tab(self):
@@ -45,6 +46,11 @@ class WorkBenchClass:
         WorkBench.grid_columnconfigure(1, weight=1)
         conn = sqlite3.connect(':memory:')
         cursor = conn.cursor()
+        runBar = Menu(self.menuBar, tearoff=0)
+        runBar.add_command(label='Run Code', command=self.runCode, accelerator='Ctrl+R')
+        self.menuBar.add_cascade(label='Run', menu=runBar)
+
+
 
     def runCode(self):
             # try:

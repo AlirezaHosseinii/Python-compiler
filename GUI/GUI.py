@@ -31,15 +31,17 @@ class SqlIdleWithLexicalGUI:
         self.hover_color = 'yellow'
         self.notebook = ttk.Notebook(self.root)
         self.notebook.pack(fill='both', expand=True, side='left') 
-        workBenchTab = WorkBenchClass(self.notebook)
+        menuBar = Menu(self.root)
+        workBenchTab = WorkBenchClass(self.notebook,menuBar)
         self.tree_page = ttk.Frame(self.notebook)
         self.lex_out_put = ttk.Frame(self.notebook)
         self.notebook.add(self.tree_page, text="OutPut")
         self.notebook.add(self.lex_out_put, text=" LexicalAnalyzer")
-        self.create_widgets(self.tree_page)
+
+        self.create_widgets(self.tree_page,menuBar)
 
 
-    def create_widgets(self, tree_page):
+    def create_widgets(self, tree_page,menuBar):
         self.tree = ttk.Treeview(tree_page)
         self.tree["columns"] = ("1", "2")
         self.tree.column("#0", width=100, minwidth=100, anchor='w')
@@ -54,7 +56,7 @@ class SqlIdleWithLexicalGUI:
 
         self.root.bind('<Control-c>', self.on_exit)
 
-        menuBar = Menu(self.root)
+        
         fileBar = Menu(menuBar, tearoff=0)
         fileBar.add_command(label='Open', command=self.openSqlFile)
         fileBar.add_command(label='Save', command=self.saveSqlFile, accelerator='Ctrl+S')
@@ -80,11 +82,7 @@ class SqlIdleWithLexicalGUI:
         self.root.bind('<Control-f>', self.findText)
         self.root.bind('<Control-h>', self.findReplaceText)
 
-        runBar = Menu(menuBar, tearoff=0)
-        runBar.add_command(label='Run Code', command=self.runCode, accelerator='Ctrl+R')
-        menuBar.add_cascade(label='Run', menu=runBar)
-        self.root.bind('<Control-r>', self.runCode)
-
+        
         modeBar = Menu(menuBar, tearoff=0)
         # modeBar.add_radiobutton(label='Dark Mode', variable=self.mode, value='dark', command=self.toggle_mode)
         # modeBar.add_radiobutton(label='Light Mode', variable=self.mode, value='light', command=self.toggle_mode)
@@ -143,29 +141,29 @@ class SqlIdleWithLexicalGUI:
     def exitProgram(self):
         self.root.destroy()
 
-    def runCode(self, event=None):
-        try:
-            self.result_text.delete(1.0, tk.END)
-            query = self.query_text.get("1.0", tk.END)
-            lexicalAnalyzer = LexicalAnalyzer(query.strip())
-            Lexicaltokens = list(lexicalAnalyzer.analyze_line())
-            print("Lexicaltokens are : ", Lexicaltokens)
-            result = ""
-            if Lexicaltokens[0].lower() == "insert":
-                self.result_text.insert(tk.END, "checking insert query   :  ")
-                syntaxAnalyzer = InsertCommandSyntaxAnalyzer.InsertCommandSyntaxAnalyzer(Lexicaltokens)
-                result = syntaxAnalyzer.parse()
-            elif Lexicaltokens[0].lower() == "create":
-                self.result_text.insert(tk.END, "checking create query   :  ")
-                syntaxAnalyzer = CreateTableSyntaxAnalyzer.CreateTableSyntaxAnalyzer(Lexicaltokens)
-                result = syntaxAnalyzer.parse()
-            else:
-                self.show_error(f"The term '{Lexicaltokens[0]}' is not supported by this compiler.")
+    # def runCode(self, event=None):
+    #     try:
+    #         self.result_text.delete(1.0, tk.END)
+    #         query = self.query_text.get("1.0", tk.END)
+    #         lexicalAnalyzer = LexicalAnalyzer(query.strip())
+    #         Lexicaltokens = list(lexicalAnalyzer.analyze_line())
+    #         print("Lexicaltokens are : ", Lexicaltokens)
+    #         result = ""
+    #         if Lexicaltokens[0].lower() == "insert":
+    #             self.result_text.insert(tk.END, "checking insert query   :  ")
+    #             syntaxAnalyzer = InsertCommandSyntaxAnalyzer.InsertCommandSyntaxAnalyzer(Lexicaltokens)
+    #             result = syntaxAnalyzer.parse()
+    #         elif Lexicaltokens[0].lower() == "create":
+    #             self.result_text.insert(tk.END, "checking create query   :  ")
+    #             syntaxAnalyzer = CreateTableSyntaxAnalyzer.CreateTableSyntaxAnalyzer(Lexicaltokens)
+    #             result = syntaxAnalyzer.parse()
+    #         else:
+    #             self.show_error(f"The term '{Lexicaltokens[0]}' is not supported by this compiler.")
 
-            print(f"result is {result}")
-            self.result_text.insert(tk.END, result)
-        except Exception as e:
-            self.show_error(e)
+    #         print(f"result is {result}")
+    #         self.result_text.insert(tk.END, result)
+    #     except Exception as e:
+    #         self.show_error(e)
 
     def copyText(self):
         self.query_text.clipboard_clear()
