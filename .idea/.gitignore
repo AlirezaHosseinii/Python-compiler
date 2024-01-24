@@ -9,5 +9,7 @@
 /LexicalAnalyzer/__pycache__/
 /GUI/__pycache__/
 /SyntaxAnalyzer/__pycache__/
-/LexicalAnalyzer/__pycache__/
 /__pycache__/
+
+# Ignore all files related to pycache
+**/__pycache__/
