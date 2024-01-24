@@ -5,6 +5,8 @@ from tkinter.filedialog import askopenfilename, asksaveasfilename
 import sqlite3
 import sys
 from WorkBench import WorkBenchClass
+from LexicalAnalyzerGUI import LexicalAnalyzerClass
+
 # sys.path.insert(1, 'LexicalAnalyzer')
 # from LexicalAnalyzer import LexicalAnalyzer
 
@@ -15,6 +17,8 @@ from WorkBench import WorkBenchClass
 # from SyntaxAnalyzer import CreateTableSyntaxAnalyzer
 # from tests import get_tests
 from tkinter.colorchooser import askcolor
+
+
 
 class SqlIdleWithLexicalGUI:
     def __init__(self, root):
@@ -33,23 +37,17 @@ class SqlIdleWithLexicalGUI:
         self.notebook.pack(fill='both', expand=True, side='left') 
         menuBar = Menu(self.root)
         workBenchTab = WorkBenchClass(self.notebook,menuBar)
+        lexicalAnalyzer = LexicalAnalyzerClass(self.root,self.notebook,menuBar)
+
         self.tree_page = ttk.Frame(self.notebook)
         self.lex_out_put = ttk.Frame(self.notebook)
         self.notebook.add(self.tree_page, text="OutPut")
-        self.notebook.add(self.lex_out_put, text=" LexicalAnalyzer")
 
-<<<<<<< HEAD:GUI.py
-        self.create_widgets(self.tree_page, self.result_page)
-        self.notebook.add(self.tree_page, text=" LexicalAnalyzer")
 
-        self.lexical_analyzer_app = None
-    def create_widgets(self, tree_page, result_page):
-=======
         self.create_widgets(self.tree_page,menuBar)
 
 
     def create_widgets(self, tree_page,menuBar):
->>>>>>> 7931a3be6557e182f9b2fbdefbdb6dab64a46d5e:GUI/GUI.py
         self.tree = ttk.Treeview(tree_page)
         self.tree["columns"] = ("1", "2")
         self.tree.column("#0", width=100, minwidth=100, anchor='w')
@@ -64,7 +62,8 @@ class SqlIdleWithLexicalGUI:
 
         self.root.bind('<Control-c>', self.on_exit)
 
-        
+
+
         fileBar = Menu(menuBar, tearoff=0)
         fileBar.add_command(label='Open', command=self.openSqlFile)
         fileBar.add_command(label='Save', command=self.saveSqlFile, accelerator='Ctrl+S')
@@ -72,6 +71,9 @@ class SqlIdleWithLexicalGUI:
         fileBar.add_separator()
         fileBar.add_command(label='Exit', command=self.exitProgram)
         menuBar.add_cascade(label='File', menu=fileBar)
+
+
+
 
         editBar = Menu(menuBar, tearoff=0)
         editBar.add_command(label='Copy', command=self.copyText, accelerator='Ctrl+C')
@@ -90,7 +92,9 @@ class SqlIdleWithLexicalGUI:
         self.root.bind('<Control-f>', self.findText)
         self.root.bind('<Control-h>', self.findReplaceText)
 
-        
+
+
+
         modeBar = Menu(menuBar, tearoff=0)
         # modeBar.add_radiobutton(label='Dark Mode', variable=self.mode, value='dark', command=self.toggle_mode)
         # modeBar.add_radiobutton(label='Light Mode', variable=self.mode, value='light', command=self.toggle_mode)
@@ -100,26 +104,14 @@ class SqlIdleWithLexicalGUI:
 
         # self.toggle_mode()
 
+
+
     def change_background(self):
         color = askcolor()[1]
         if color:
             self.result_text.config(background=color)
 
-<<<<<<< HEAD:GUI.py
-    def toggle_mode(self):
-        current_mode = self.mode.get()
-        if current_mode == 'dark':
-            self.root.configure(bg=self.dark_bg_color)
-            self.tree.configure(style='Dark.Treeview')
-            self.query_text.configure(bg="#1e1e1e", fg='#05C3DD')
-            self.result_text.configure(bg="#1e1e1e", fg='#05C3DD')
-        else:
-            self.root.configure(bg='#1e1e1e')
-            self.tree.configure(style='Light.Treeview')
-            self.query_text.configure(bg="white", fg='blue')
-            self.result_text.configure(bg="white", fg='red')
-=======
->>>>>>> 7931a3be6557e182f9b2fbdefbdb6dab64a46d5e:GUI/GUI.py
+
 
     def execute_query(self):
         query = self.query_text.get("1.0", tk.END)
@@ -133,10 +125,13 @@ class SqlIdleWithLexicalGUI:
             self.result_text.delete(1.0, tk.END)
             self.result_text.insert(tk.END, f"Error: {str(e)}")
 
+
+
     def on_exit(self, event):
         self.conn.close()
         self.root.destroy()
 
+ 
     def openSqlFile(self):
         path = askopenfilename(filetypes=[('SQL Files', '*.sql')])
 
