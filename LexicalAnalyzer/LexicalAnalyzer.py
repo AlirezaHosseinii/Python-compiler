@@ -11,7 +11,8 @@ class LexicalKind(Enum):
     FLOAT = "Float"
     DOT = "."
     WHITESPACE = "WhiteSpace"
-    STRING = "String"
+    IDENTIFIER = "Identifier"
+    KEYWORD = "Keyword"
     SEMI_COLON = "SemiColon"
     PLUS_OPERATION = "PlusOperation"
     EQUAL_OPERATION = "EqualOperation"
@@ -36,68 +37,68 @@ class LexicalAnalyzer:
     def get_type(word):
         if re.match(r'\d+(\.\d+)?$' ,word):
             if re.match(r'\d+\.\d+?$', word):
-                return LexicalKind.FLOAT
+                return LexicalKind.FLOAT.name
             else:    
-                return LexicalKind.INT
-        elif re.match(r'\s+$' ,word):
-            return LexicalKind.WHITESPACE
+                return LexicalKind.INT.name
         elif word == "+":
-            return LexicalKind.PLUS_OPERATION
+            return LexicalKind.PLUS_OPERATION.name
         elif word == "-":
-            return LexicalKind.MINUS_OPERATION
+            return LexicalKind.MINUS_OPERATION.name
         elif word == "/":
-            return LexicalKind.DIVIDE_OPERATION
+            return LexicalKind.DIVIDE_OPERATION.name
         elif word == "*":
-            return LexicalKind.MULTIPLE_OPERATION
+            return LexicalKind.MULTIPLE_OPERATION.name
         elif word == ":":
-            return LexicalKind.COLON
+            return LexicalKind.COLON.name
         elif word == ";":
-            return LexicalKind.SEMI_COLON
+            return LexicalKind.SEMI_COLON.name
         elif word == ",":
-            print("here")
-            return LexicalKind.COMMA
+            return LexicalKind.COMMA.name
         elif word == "(":
-            return LexicalKind.OPEN_PARANTHESIS
+            return LexicalKind.OPEN_PARANTHESIS.name
         elif word == ")":
-            return LexicalKind.CLOSE_PARANTHESIS
+            return LexicalKind.CLOSE_PARANTHESIS.name
         elif re.match(r'^[a-zA-Z_]\w*(\d* | [a-zA-Z_]*)?$', word): 
-            return LexicalKind.STRING
+            keywords = ["SELECT", "INSERT", "UPDATE", "DELETE", "CREATE", "DROP", "ALTER",
+            "JOIN", "INNER", "LEFT", "RIGHT", "FULL", "WHERE", "GROUP BY", "ORDER BY",
+            "HAVING", "UNION", "ALL", "AND", "OR", "NOT", "NULL","INTO" ,"TRUE", "FALSE",
+            "BETWEEN", "LIKE", "AS", "ON", "IS", "IN", "EXISTS", "CASE", "WHEN",
+            "THEN", "ELSE", "END", "DISTINCT", "TOP", "LIMIT", "AUTO_INCREMENT", "SERIAL", "ROWNUM", "SYSDATE", "CURRENT_TIMESTAMP",
+            "IDENTITY", "NOCHECK", "CASCADE", "FOR"]
+            if word.upper() in keywords:
+                return LexicalKind.KEYWORD.name
+            else:
+                return LexicalKind.IDENTIFIER.name
+            
         elif word == "==":
-            return LexicalKind.EQUAL_OPERATION
+            return LexicalKind.EQUAL_OPERATION.name
         elif word == "=":
-            return LexicalKind.ASSIGNMENT_OPERATION
+            return LexicalKind.ASSIGNMENT_OPERATION.name
         elif word == "!=":
-            return LexicalKind.UNEQUAL_OPERATION
+            return LexicalKind.UNEQUAL_OPERATION.name
         elif word == "<":
-            return LexicalKind.LESS_OPERATION
+            return LexicalKind.LESS_OPERATION.name
         elif word == ">":
-            return LexicalKind.MORE_OPERATION
+            return LexicalKind.MORE_OPERATION.name
         elif word == ">=":
-            return LexicalKind.MORE_EQUAL_OPERATION
+            return LexicalKind.MORE_EQUAL_OPERATION.name
         elif word == "<=":
-            return LexicalKind.LESS_EQUAL_OPERATION    
+            return LexicalKind.LESS_EQUAL_OPERATION.name    
         elif word == ".":
-            return LexicalKind.DOT
+            return LexicalKind.DOT.name
         else:
-            return LexicalKind.STRING
+            return LexicalKind.UNDEFINED.name
 
     def analyze_line(self):
         print("text is: " , self.text)
-        tokens_tuples = re.findall( r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s|(\()|(\))|(,)|(;)|(.)', self.text)
+        tokens_tuples = re.findall(r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s|(\()|(\))|(,)|(;)|(.)', self.text)
 
         tokens = []
-        
-        token_types = {}
-        i = 0
         for token_tuples in tokens_tuples:
             for token in token_tuples:
                 if token:
-                    type_of_token = LexicalAnalyzer.get_type(token)
-                    print(f"token is {token} and type of token is {type_of_token}")
                     tokens.append(token)
-                    token_types[token] = type_of_token
-                    i += 1
-
+                   
         return tokens
     
 
@@ -109,18 +110,39 @@ class LexicalAnalyzerApp:
 
     def create_widgets(self):
         self.text_label = tk.Label(self.master, text="Enter Text:")
-        self.text_label.pack()
+        self.text_label.grid(row=0, column=0, sticky="w", padx=5, pady=5)
 
         self.text_entry = tk.Entry(self.master, width=50)
-        self.text_entry.pack()
+        self.text_entry.grid(row=1, column=0, padx=5, pady=5)
 
         self.analyze_button = tk.Button(self.master, text="Analyze", command=self.analyze_text)
-        self.analyze_button.pack()
-        
-        self.result_tree = ttk.Treeview(self.master, columns=("Token", "Type"), show="headings")
+        self.analyze_button.grid(row=2, column=0, pady=5)
+
+        # Create the Treeview widget with the yscroll option
+        self.result_tree = ttk.Treeview(self.master, columns=("Token", "Type"), show="headings", yscrollcommand=self.treeview_yscroll)
         self.result_tree.heading("Token", text="Token")
         self.result_tree.heading("Type", text="Type")
-        self.result_tree.pack()
+        self.result_tree.grid(row=0, column=1, rowspan=3, padx=5, pady=5, sticky="nsew")
+
+        self.scrollbar = ttk.Scrollbar(self.master, orient="vertical", command=self.result_tree.yview)
+        self.result_tree.configure(yscrollcommand=self.scrollbar.set)
+        self.scrollbar.grid(row=0, column=2, rowspan=3, sticky="ns")
+
+    def treeview_yscroll(self, *args):
+        self.result_tree.yview(*args)
+
+    def analyze_text(self):
+        text_to_analyze = self.text_entry.get()
+        lexical_analyzer = LexicalAnalyzer(text_to_analyze)
+        tokens = lexical_analyzer.analyze_line()
+
+        for item in self.result_tree.get_children():
+            self.result_tree.delete(item)
+
+        for token in tokens:
+            token_type = LexicalAnalyzer.get_type(token)
+            self.result_tree.insert("", "end", values=(token, token_type))
+
 
     def analyze_text(self):
         text_to_analyze = self.text_entry.get()

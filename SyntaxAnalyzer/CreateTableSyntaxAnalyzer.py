@@ -118,7 +118,6 @@ class CreateTableSyntaxAnalyzer:
             if self.current_token == "(":
                 self.match("(")
                 self.check_numeric()
-                # print(f"here is{self.current_token.upper()}")
                 self.match(")")
         else:
              raise SyntaxError(f"{self.previous()} Unexpected token: {self.current_token}")
