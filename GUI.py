@@ -16,8 +16,7 @@ from SyntaxAnalyzer import CreateTableSyntaxAnalyzer
 from tests import get_tests
 from tkinter.colorchooser import askcolor
 
-
-class SqlIdleGUI:
+class SqlIdleWithLexicalGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("SQL COMPILER")
@@ -41,7 +40,9 @@ class SqlIdleGUI:
         self.notebook.add(self.tree_page, text="OutPut")
 
         self.create_widgets(self.tree_page, self.result_page)
+        self.notebook.add(self.tree_page, text=" LexicalAnalyzer")
 
+        self.lexical_analyzer_app = None
     def create_widgets(self, tree_page, result_page):
         self.tree = ttk.Treeview(tree_page)
         self.tree["columns"] = ("1", "2")
@@ -126,18 +127,17 @@ class SqlIdleGUI:
         self.toggle_mode()
 
     def change_background(self):
-        color = askcolor()[1]  # askcolor returns a tuple (rgb, hex), we need the hex value
+        color = askcolor()[1]
         if color:
             self.result_text.config(background=color)
-
 
     def toggle_mode(self):
         current_mode = self.mode.get()
         if current_mode == 'dark':
             self.root.configure(bg=self.dark_bg_color)
             self.tree.configure(style='Dark.Treeview')
-            self.query_text.configure(bg="#1e1e1e", fg='#365570')
-            self.result_text.configure(bg="#1e1e1e", fg='#365570')
+            self.query_text.configure(bg="#1e1e1e", fg='#05C3DD')
+            self.result_text.configure(bg="#1e1e1e", fg='#05C3DD')
         else:
             self.root.configure(bg='#1e1e1e')
             self.tree.configure(style='Light.Treeview')
@@ -280,8 +280,7 @@ class SqlIdleGUI:
     def on_test_button_leave(self, event):
         self.test_button.configure(bg=self.button_color)
 
-
 if __name__ == "__main__":
     root = tk.Tk()
-    app = SqlIdleGUI(root)
+    app = SqlIdleWithLexicalGUI(root)
     root.mainloop()

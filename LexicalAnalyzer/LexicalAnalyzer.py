@@ -1,12 +1,14 @@
 from enum import Enum
 import re
-
+import tkinter as tk
+from tkinter import ttk
 
 class LexicalKind(Enum):
     COMMA = ","
     OPEN_PARANTHESIS = "("
     CLOSE_PARANTHESIS = ")"
-    NUMBER = "Number"
+    INT = "Int"
+    FLOAT = "Float"
     DOT = "."
     WHITESPACE = "WhiteSpace"
     STRING = "String"
@@ -33,7 +35,10 @@ class LexicalAnalyzer:
     @staticmethod
     def get_type(word):
         if re.match(r'\d+(\.\d+)?$' ,word):
-            return LexicalKind.NUMBER
+            if re.match(r'\d+\.\d+?$', word):
+                return LexicalKind.FLOAT
+            else:    
+                return LexicalKind.INT
         elif re.match(r'\s+$' ,word):
             return LexicalKind.WHITESPACE
         elif word == "+":
@@ -77,10 +82,6 @@ class LexicalAnalyzer:
             return LexicalKind.STRING
 
     def analyze_line(self):
-        #read, more test and meanwhile go for syntax analayzer
-        #tokens_tuples = re.findall(r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s', self.text)
-        #tokens_tuples = re.findall(r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s|(\()|(\))', self.text)
-
         print("text is: " , self.text)
         tokens_tuples = re.findall( r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s|(\()|(\))|(,)|(;)|(.)', self.text)
 
@@ -97,5 +98,52 @@ class LexicalAnalyzer:
                     token_types[token] = type_of_token
                     i += 1
 
-
         return tokens
+    
+
+class LexicalAnalyzerApp:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Lexical Analyzer")
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.text_label = tk.Label(self.master, text="Enter Text:")
+        self.text_label.pack()
+
+        self.text_entry = tk.Entry(self.master, width=50)
+        self.text_entry.pack()
+
+        self.analyze_button = tk.Button(self.master, text="Analyze", command=self.analyze_text)
+        self.analyze_button.pack()
+        
+        self.result_tree = ttk.Treeview(self.master, columns=("Token", "Type"), show="headings")
+        self.result_tree.heading("Token", text="Token")
+        self.result_tree.heading("Type", text="Type")
+        self.result_tree.pack()
+
+    def analyze_text(self):
+        text_to_analyze = self.text_entry.get()
+        lexical_analyzer = LexicalAnalyzer(text_to_analyze)
+        tokens = lexical_analyzer.analyze_line()
+
+        for item in self.result_tree.get_children():
+            self.result_tree.delete(item)
+
+        for token in tokens:
+            token_type = LexicalAnalyzer.get_type(token)
+            self.result_tree.insert("", "end", values=(token, token_type))
+
+def main():
+    root = tk.Tk()
+    app = LexicalAnalyzerApp(root)
+    root.mainloop()
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
