@@ -1,4 +1,4 @@
-from GUI import SqlIdleGUI
+from GUI.GUI import SqlIdleGUI
 import tkinter as tk
 
 #text type

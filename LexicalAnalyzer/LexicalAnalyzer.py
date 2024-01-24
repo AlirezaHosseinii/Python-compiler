@@ -82,11 +82,12 @@ class LexicalAnalyzer:
         #tokens_tuples = re.findall(r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s|(\()|(\))', self.text)
 
         print("text is: " , self.text)
-        tokens_tuples = re.findall( r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s|(\()|(\))|(,)|(;)|(.)', self.text)
+        tokens_tuples = re.findall(r'(\d+(\.\d+)?)|([a-zA-Z_]\w*(\d*|[a-zA-Z_]*)?)|([\+\-\*/:]=?|==|=|!=|<=|>=|<|>)|\s|(\()|(\))|(,)|(;)|(.)', self.text)
 
         tokens = []
         
         token_types = {}
+        
         i = 0
         for token_tuples in tokens_tuples:
             for token in token_tuples:
