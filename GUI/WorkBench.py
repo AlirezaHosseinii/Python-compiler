@@ -17,7 +17,6 @@ from tests import get_tests
 
 
 class WorkBenchClass:
-
     def __init__(self, notebook):
         self.notebook = notebook
         self.test_value = 0

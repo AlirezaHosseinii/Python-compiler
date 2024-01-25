@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="60e15486-2bee-4f29-aa07-c9a11bddd285" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Python-compiler.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GUI/GUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/GUI/GUI.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GUI/GUITools.py" beforeDir="false" afterPath="$PROJECT_DIR$/GUI/GUITools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GUI/LexicalAnalyzerGUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/GUI/LexicalAnalyzerGUI.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GUI/MenuBar.py" beforeDir="false" afterPath="$PROJECT_DIR$/GUI/MenuBar.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GUI/WorkBench.py" beforeDir="false" afterPath="$PROJECT_DIR$/GUI/WorkBench.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SyntaxAnalyzer/AlterTableSyntaxAnlyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/SyntaxAnalyzer/AlterTableSyntaxAnlyzer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +38,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1706207413940</updated>
-      <workItem from="1706207419245" duration="421000" />
+      <workItem from="1706207419245" duration="979000" />
     </task>
     <servers />
   </component>
@@ -68,6 +58,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Python_compiler$MenuBar.coverage" NAME="MenuBar Coverage Results" MODIFIED="1706207605524" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/GUI" />
-    <SUITE FILE_PATH="coverage/Python_compiler$Compiler.coverage" NAME="Compiler Coverage Results" MODIFIED="1706207754728" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Python_compiler$AlterTableSyntaxAnlyzer.coverage" NAME="AlterTableSyntaxAnlyzer Coverage Results" MODIFIED="1706208392577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SyntaxAnalyzer" />
+    <SUITE FILE_PATH="coverage/Python_compiler$Compiler.coverage" NAME="Compiler Coverage Results" MODIFIED="1706207932724" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
