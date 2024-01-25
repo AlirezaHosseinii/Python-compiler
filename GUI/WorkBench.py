@@ -1,10 +1,8 @@
-   
-from tkinter import *
 import tkinter as tk
 from tkinter import ttk, scrolledtext
-from tkinter.filedialog import askopenfilename, asksaveasfilename
-import GUITools
+from .GUITools import *
 import sys
+
 sys.path.append('../')
 sys.path.append('./')
 sys.path.append('/')
@@ -16,7 +14,7 @@ from SyntaxAnalyzer.InsertCommandSyntaxAnalyzer import InsertCommandSyntaxAnalyz
 from SyntaxAnalyzer.CreateTableSyntaxAnalyzer import CreateTableSyntaxAnalyzerClass
 from LexicalAnalyzerDir.LexicalAnalyzer import LexicalAnalyzerClass
 from tests import get_tests
-from tkinter.colorchooser import askcolor
+
 
 class WorkBenchClass:
 
@@ -43,29 +41,30 @@ class WorkBenchClass:
         self.WorkBench.grid_columnconfigure(1, weight=1)
 
     def create_query_text(self):
-        self.query_text = scrolledtext.ScrolledText(self.WorkBench, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
+        self.query_text = scrolledtext.ScrolledText(self.WorkBench, wrap=tk.WORD, width=80, height=15,
+                                                    font=("Arial", 12))
         self.query_text.grid(row=0, column=0, padx=10, pady=10, columnspan=2, sticky="nsew")
-        
+
     def create_run_button(self):
-        self.execute_button = tk.Button(self.WorkBench, text="Run Code", command=self.runCode, bg=GUITools.button_color,
+        self.execute_button = tk.Button(self.WorkBench, text="Run Code", command=self.runCode, bg=button_color,
                                         width=50, height=2)
-        self.execute_button.bind("<Enter>", GUITools.on_execute_button_hover)
-        self.execute_button.bind("<Leave>", GUITools.on_excute_button_leave)
+        self.execute_button.bind("<Enter>", on_execute_button_hover)
+        self.execute_button.bind("<Leave>", on_excute_button_leave)
         self.execute_button.grid(row=1, column=0, columnspan=2, sticky="nsew")
 
     def create_test_button(self):
-        self.test_button = tk.Button(self.WorkBench, text="Run TEST", command=self.runTests, bg=GUITools.button_color,
-                                        width=50, height=2)
-        self.test_button.bind("<Enter>", GUITools.on_test_button_hover)
-        self.test_button.bind("<Leave>", GUITools.on_test_button_leave)
+        self.test_button = tk.Button(self.WorkBench, text="Run TEST", command=self.runTests, bg=button_color,
+                                     width=50, height=2)
+        self.test_button.bind("<Enter>", on_test_button_hover)
+        self.test_button.bind("<Leave>", on_test_button_leave)
         self.test_button.grid(row=2, column=0, columnspan=2, sticky="nsew")
 
     def create_result_text(self):
-        self.result_text = scrolledtext.ScrolledText(self.WorkBench, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
+        self.result_text = scrolledtext.ScrolledText(self.WorkBench, wrap=tk.WORD, width=80, height=15,
+                                                     font=("Arial", 12))
         self.result_text.grid(row=3, column=0, padx=10, pady=10, columnspan=2, sticky="nsew")
-        
 
-    def runCode(self,event=None):
+    def runCode(self, event=None):
         try:
             self.result_text.delete(1.0, tk.END)
             query = self.query_text.get("1.0", tk.END)
@@ -88,7 +87,7 @@ class WorkBenchClass:
             self.result_text.insert(tk.END, result)
         except Exception as e:
             self.show_error(e)
-    
+
     def runTests(self, event=None):
         self.query_text.delete(1.0, tk.END)
         self.result_text.delete(1.0, tk.END)

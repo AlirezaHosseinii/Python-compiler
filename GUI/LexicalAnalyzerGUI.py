@@ -5,7 +5,7 @@ from tkinter import ttk, scrolledtext
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import sqlite3
 import sys
-import GUITools
+from .GUITools import *
 
 
 from tkinter.colorchooser import askcolor
