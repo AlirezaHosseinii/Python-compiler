@@ -1,6 +1,6 @@
 import sys
 sys.path.insert(1, 'LexicalAnalyzer')
-from LexicalAnalyzer import LexicalAnalyzer
+from LexicalAnalyzerDir.LexicalAnalyzer import LexicalAnalyzerClass
 
 class AlterTableSyntaxAnalyzerClass:
     def __init__(self, tokens):
@@ -244,8 +244,8 @@ MODIFY column_name int;
 Command = "ALTER TABLE my_table add existing_column VARCHAR(50) FOREIGN KEY(kk) references mm, ADD new_column INT;"
 
 
-lexicalAnalyzer = LexicalAnalyzer(Command)
+lexicalAnalyzer = LexicalAnalyzerClass(Command)
 Lexicaltokens = list(lexicalAnalyzer.analyze_line())
 print(f"lexical tokens: {Lexicaltokens}")
-syntaxAnalyzer = AlterTableSyntaxAnalyzer(Lexicaltokens)
+syntaxAnalyzer = AlterTableSyntaxAnalyzerClass(Lexicaltokens)
 print(syntaxAnalyzer.parse())

@@ -1,13 +1,7 @@
 from GUI.GUI import SqlIdleGUI
 import tkinter as tk
 import sys
-sys.path.append('../')
-sys.path.append('./')
-sys.path.append('/')
-sys.path.append('.')
-sys.path.append('/.')
-sys.path.append('/..')
-sys.path.append('./Python-compiler')
+
 #text type
 
 #fails with Price DECIMAL(10, 2)

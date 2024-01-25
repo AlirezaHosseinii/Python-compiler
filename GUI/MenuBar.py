@@ -8,8 +8,8 @@ import sys
 sys.path.append('../')
 sys.path.append('./')
 sys.path.append('./Python-compiler')
-import GUITools
-from WorkBench import WorkBenchClass
+from .GUITools import *
+from .WorkBench import WorkBenchClass
 from tkinter.colorchooser import askcolor
 
 class MenuBarClass:
