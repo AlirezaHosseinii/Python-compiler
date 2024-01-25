@@ -29,7 +29,7 @@ class LexicalKind(Enum):
     UNDEFINED = "Undefined"
     SPACE = "Space"
 
-class LexicalAnalyzer:
+class LexicalAnalyzerClass:
     def __init__(self, text):
         self.text = text
 

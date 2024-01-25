@@ -1,4 +1,4 @@
-class CreateTableSyntaxAnalyzer:
+class CreateTableSyntaxAnalyzerClass:
     def __init__(self, tokens):
         self.tokens = tokens
         self.current_token : str = ""

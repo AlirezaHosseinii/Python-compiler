@@ -2,7 +2,7 @@ import sys
 sys.path.insert(1, 'LexicalAnalyzer')
 from LexicalAnalyzer import LexicalAnalyzer
 
-class AlterTableSyntaxAnalyzer:
+class AlterTableSyntaxAnalyzerClass:
     def __init__(self, tokens):
         self.tokens = tokens
         self.current_token = ""

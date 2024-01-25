@@ -7,14 +7,14 @@ import sqlite3
 import sys
 import GUITools
 
+
 from tkinter.colorchooser import askcolor
 
-class LexicalAnalyzerClass:
+class LexicalAnalyzerGUIClass:
 
-    def __init__(self, root, notebook,menuBar):
+    def __init__(self, root, notebook):
         self.root = root
         self.notebook = notebook
-        self.menuBar =menuBar
         self.create_Lexical_tab()
 
     def create_Lexical_tab(self):
@@ -34,16 +34,3 @@ class LexicalAnalyzerClass:
 
     def treeview_yscroll(self, *args):
         self.result_tree.yview(*args)
-"""""
-    def analyze_text(self):
-        text_to_analyze = self.text_entry.get()
-        lexical_analyzer = LexicalAnalyzer(text_to_analyze)
-        tokens = lexical_analyzer.analyze_line()
-
-        for item in self.result_tree.get_children():
-            self.result_tree.delete(item)
-
-        for token in tokens:
-            token_type = LexicalAnalyzer.get_type(token)
-            self.result_tree.insert("", "end", values=(token, token_type))
-"""
