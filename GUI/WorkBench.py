@@ -14,7 +14,7 @@ sys.path.append('/..')
 sys.path.append('./Python-compiler')
 from SyntaxAnalyzer.InsertCommandSyntaxAnalyzer import InsertCommandSyntaxAnalyzerClass
 from SyntaxAnalyzer.CreateTableSyntaxAnalyzer import CreateTableSyntaxAnalyzerClass
-import GUITools
+from .GUITools import *
 from LexicalAnalyzerDir.LexicalAnalyzer import LexicalAnalyzerClass
 from tests import get_tests
 from tkinter.colorchooser import askcolor
