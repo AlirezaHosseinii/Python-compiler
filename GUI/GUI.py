@@ -18,6 +18,8 @@ from .showTable import ShowTableClass
 class SqlIdleGUI:
     def __init__(self, root):
         self.root = root
+        label = tk.Label(self.root, text="SQL COMPILER")
+        label.pack()
         self.root.title("SQL COMPILER")
         self.root.geometry('800x600')
         self.notebook = ttk.Notebook(self.root)

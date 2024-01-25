@@ -1,7 +1,9 @@
 import tkinter as tk
-from tkinter import ttk, scrolledtext
+from tkinter import Label, ttk, scrolledtext
 from .GUITools import *
 import sys
+from PIL import Image, ImageTk
+
 
 sys.path.append('../')
 sys.path.append('./')
@@ -40,13 +42,38 @@ class WorkBenchClass:
         self.WorkBench.grid_columnconfigure(1, weight=1)
 
     def create_query_text(self):
-        self.query_text = scrolledtext.ScrolledText(self.WorkBench, wrap=tk.WORD, width=80, height=15,
-                                                    font=("Arial", 12))
-        self.query_text.grid(row=0, column=0, padx=10, pady=10, columnspan=2, sticky="nsew")
+
+        
+         #Load the PIL image
+
+        pil_image = Image.open('background.jpg')
+        print(self.WorkBench.winfo_reqwidth())
+        pil_image.resize((800, 600), Image.Resampling.LANCZOS)
+
+        # Convert the PIL image to a Tkinter PhotoImage
+        tk_image = ImageTk.PhotoImage(pil_image)
+        
+
+        # Create a Label with the image as the background
+        background_label = Label(self.WorkBench, image=tk_image, width=800, height=600)
+        background_label.img = tk_image
+
+        # Adjust relwidth to make the background stretch to the width of the query text box
+        background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        # query_text_width = self.WorkBench.winfo_reqwidth()
+        # query_text_height = int(self.WorkBench.winfo_reqheight() * 0.3)
+
+        self.query_text = scrolledtext.ScrolledText(self.WorkBench, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
+        self.query_text.grid(row=0, column=0, padx=100, pady=100, columnspan=2, sticky="nsew")
+
+
+        
+
+
 
     def create_run_button(self):
         self.execute_button = tk.Button(self.WorkBench, text="Run Code", command=self.runCode, bg=button_color,
-                                        width=50, height=2)
+                                        width = 25, height=2)
         self.execute_button.bind("<Enter>", on_execute_button_hover)
         self.execute_button.bind("<Leave>", on_excute_button_leave)
         self.execute_button.grid(row=1, column=0, columnspan=2, sticky="nsew")
@@ -56,12 +83,12 @@ class WorkBenchClass:
                                      width=50, height=2)
         self.test_button.bind("<Enter>", on_test_button_hover)
         self.test_button.bind("<Leave>", on_test_button_leave)
-        self.test_button.grid(row=2, column=0, columnspan=2, sticky="nsew")
+        self.test_button.grid(row=2, column=0, columnspan=2, sticky="nsew", pady=(5, 0))
 
     def create_result_text(self):
         self.result_text = scrolledtext.ScrolledText(self.WorkBench, wrap=tk.WORD, width=80, height=15,
                                                      font=("Arial", 12))
-        self.result_text.grid(row=3, column=0, padx=10, pady=10, columnspan=2, sticky="nsew")
+        self.result_text.grid(row=3, column=0, padx=100, pady=100, columnspan=2, sticky="nsew")
 
     def runCode(self, event=None):
         try:
