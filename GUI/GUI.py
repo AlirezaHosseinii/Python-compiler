@@ -9,7 +9,7 @@ sys.path.append('.')
 sys.path.append('/.')
 sys.path.append('/..')
 sys.path.append('./Python-compiler')
-from .WorkBench import WorkBenchClass
+from WorkBench import WorkBenchClass
 from LexicalAnalyzerGUI import LexicalAnalyzerGUIClass
 from MenuBar import *
 from showTable import ShowTableClass

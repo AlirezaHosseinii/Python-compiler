@@ -3,7 +3,7 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk, scrolledtext
 from tkinter.filedialog import askopenfilename, asksaveasfilename
-
+import GUITools
 import sys
 sys.path.append('../')
 sys.path.append('./')
@@ -14,7 +14,6 @@ sys.path.append('/..')
 sys.path.append('./Python-compiler')
 from SyntaxAnalyzer.InsertCommandSyntaxAnalyzer import InsertCommandSyntaxAnalyzerClass
 from SyntaxAnalyzer.CreateTableSyntaxAnalyzer import CreateTableSyntaxAnalyzerClass
-from .GUITools import *
 from LexicalAnalyzerDir.LexicalAnalyzer import LexicalAnalyzerClass
 from tests import get_tests
 from tkinter.colorchooser import askcolor
