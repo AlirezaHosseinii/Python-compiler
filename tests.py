@@ -17,6 +17,7 @@ tests = {"tests" : [
     ,{"TEST4" : "CREATE TABLE Products (ProductID INT UNIQUE, ProductName VARCHAR(100));","status" : False}
     ,{"TEST5" : "CREATE TABLE Orders (OrderID INT, CustomerID INT FOREIGN KEY REFERENCES Customers(CustomerID));","status" : False}
     ,{"TEST6" : "CREATE TABLE Employees (EmployeeID INT DEFAULT 1001, Name VARCHAR(50));","status" : False}
+    #CREATE TABLE Employees (EmployeeID INT DEFAULT 1001, Name VARCHAR(50);
     ,{"TEST7" : "CREATE TABLE Students (StudentID INT PRIMARY KEY, Name VARCHAR(50) NOT NULL, Age INT CHECK(Age >= 18), Email VARCHAR(100) UNIQUE);","status" : False} #failed
     ,{"TEST8" : """
     CREATE TABLE Books (

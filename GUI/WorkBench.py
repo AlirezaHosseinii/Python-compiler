@@ -4,7 +4,6 @@ from .GUITools import *
 import sys
 from PIL import Image, ImageTk
 
-
 sys.path.append('../')
 sys.path.append('./')
 sys.path.append('/')
@@ -16,10 +15,12 @@ from SyntaxAnalyzer.InsertCommandSyntaxAnalyzer import InsertCommandSyntaxAnalyz
 from SyntaxAnalyzer.CreateTableSyntaxAnalyzer import CreateTableSyntaxAnalyzerClass
 from LexicalAnalyzerDir.LexicalAnalyzer import LexicalAnalyzerClass
 from tests import get_tests
+from createUItableCopy import CreateUITableClass
 
 
 class WorkBenchClass:
-    def __init__(self, notebook):
+    def __init__(self, notebook, sql_idle_gui_instance):
+        self.sql_idle_gui_instance = sql_idle_gui_instance
         self.notebook = notebook
         self.test_value = 0
         self.create_workbench_tab()
@@ -105,7 +106,11 @@ class WorkBenchClass:
             elif Lexicaltokens[0].lower() == "create":
                 self.result_text.insert(tk.END, "checking create query   :  ")
                 syntaxAnalyzer = CreateTableSyntaxAnalyzerClass(Lexicaltokens)
-                result = syntaxAnalyzer.parse()
+                result, table_name, columns = syntaxAnalyzer.parse()
+                if(result == "Accepted."):
+                    print(table_name)
+                    print(columns)
+                    create_ui_table = CreateUITableClass(self.sql_idle_gui_instance.root, table_name, columns, self.sql_idle_gui_instance.notebook)
             else:
                 self.show_error(f"The term '{Lexicaltokens[0]}' is not supported by this compiler.")
 
