@@ -20,7 +20,7 @@ class LexicalAnalyzerGUIClass:
 
     def create_widgets(self):
         pil_image = img.open('background.jpg')
-        pil_image.resize((800, 600), img.Resampling.LANCZOS)
+        # pil_image.resize((800, 600), img.Resampling.LANCZOS)
         tk_image = ImageTk.PhotoImage(pil_image)
 
         background_label = Label(self.Lexical, image=tk_image, width=800, height=600)

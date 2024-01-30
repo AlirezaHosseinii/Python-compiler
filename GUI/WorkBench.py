@@ -49,7 +49,7 @@ class WorkBenchClass:
 
         pil_image = Image.open('background.jpg')
         print(self.WorkBench.winfo_reqwidth())
-        pil_image.resize((800, 600), Image.Resampling.LANCZOS)
+        # pil_image.resize((800, 600), Image.Resampling.LANCZOS)
 
         # Convert the PIL image to a Tkinter PhotoImage
         tk_image = ImageTk.PhotoImage(pil_image)
