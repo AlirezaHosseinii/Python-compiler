@@ -2,6 +2,7 @@ class CreateTableSyntaxAnalyzerClass:
     def __init__(self, tokens):
         self.tokens = tokens
         self.current_token : str = ""
+        self.columns = []
         self.index = 0
         self.error_messages = []
         self.reserved_keywords = [
@@ -146,6 +147,10 @@ class CreateTableSyntaxAnalyzerClass:
         
     def column_def(self):
         # print(f"here is{self.current_token.upper()}")
+        try:
+            self.columns.append(self.current_token)
+        except:
+            None
         self.match_identifier()
         # print(f"here is{self.current_token.upper()}")
         self.data_type()
@@ -166,21 +171,23 @@ class CreateTableSyntaxAnalyzerClass:
     def statement(self):
         self.match("CREATE")
         self.match("TABLE")
+        table_name = self.current_token
         self.match_identifier()
         self.match("(")
         self.column_list()
         self.constraint_list()
         self.match(")")
         if self.current_token == ";":
-            return "Accepted."
+            return "Accepted.", table_name, self.columns
         else:
             raise SyntaxError(f'{self.previous()} Not finishing with ; and finished with  "{self.current_token}" ')  
 
     def parse(self):
         self.consume()
-        if self.statement() == "Accepted.":
-            return "Accepted."
+        status, table_name, columns = self.statement()
+        if status == "Accepted.":
+            return "Accepted.", table_name, columns
         else:
-            raise SyntaxError(f"Error : Not accepted , Why ? ")
+            raise SyntaxError(f"Error: Not accepted !")
 
     
