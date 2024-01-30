@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="60e15486-2bee-4f29-aa07-c9a11bddd285" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GUI/WorkBench.py" beforeDir="false" afterPath="$PROJECT_DIR$/GUI/WorkBench.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SyntaxAnalyzer/AlterTableSyntaxAnlyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/SyntaxAnalyzer/AlterTableSyntaxAnlyzer.py" afterDir="false" />
     </list>
@@ -38,7 +39,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1706207413940</updated>
-      <workItem from="1706207419245" duration="979000" />
+      <workItem from="1706207419245" duration="1383000" />
     </task>
     <servers />
   </component>
