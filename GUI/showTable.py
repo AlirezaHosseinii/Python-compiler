@@ -15,9 +15,9 @@ class ShowTableClass:
     def create_show_table_tab(self):
         self.show_table = ttk.Frame(self.notebook)
         self.notebook.add(self.show_table, text="Show Table")
-        self.create_widgets()
+        self.create_show_table_widgets()
 
-    def create_widgets(self):
+    def create_show_table_widgets(self):
         self.tree = ttk.Treeview(self.show_table)
         self.tree["columns"] = ("1", "2")
         self.tree.column("#0", width=100, minwidth=100, anchor='w')

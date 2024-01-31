@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import Label, ttk, scrolledtext
-from .GUITools import *
+from .GUITools import GUIToolsCLass
 import sys
 from PIL import Image, ImageTk
 
@@ -23,12 +23,13 @@ class WorkBenchClass:
         self.sql_idle_gui_instance = sql_idle_gui_instance
         self.notebook = notebook
         self.test_value = 0
+        self.guiTools = GUIToolsCLass(self)
         self.create_workbench_tab()
 
     def create_workbench_tab(self):
         self.WorkBench = ttk.Frame(self.notebook)
         self.notebook.add(self.WorkBench, text="WorkBench")
-        self.create_widgets()
+        self.set_background()
 
     def create_widgets(self):
         self.create_query_text()
@@ -42,61 +43,52 @@ class WorkBenchClass:
         self.WorkBench.grid_columnconfigure(0, weight=1)
         self.WorkBench.grid_columnconfigure(1, weight=1)
 
-    def create_query_text(self):
-
-        
-         #Load the PIL image
-
+    def set_background(self):
         pil_image = Image.open('background.jpg')
         print(self.WorkBench.winfo_reqwidth())
-        # pil_image.resize((800, 600), Image.Resampling.LANCZOS)
-
-        # Convert the PIL image to a Tkinter PhotoImage
         tk_image = ImageTk.PhotoImage(pil_image)
+        self.background_label:Label = Label(self.WorkBench, image=tk_image, width=800, height=600)
+        self.background_label.img = tk_image
+        self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        self.create_widgets()
+
+    def set_dark_background(self):
+        pil_image = Image.open('dark_background.jpg')
+        tk_image = ImageTk.PhotoImage(pil_image)
+        self.background_label = Label(self.WorkBench, image=tk_image, width=800, height=600)
+        self.background_label.img = tk_image
+        self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        self.create_widgets()
         
-
-        # Create a Label with the image as the background
-        background_label = Label(self.WorkBench, image=tk_image, width=800, height=600)
-        background_label.img = tk_image
-
-        # Adjust relwidth to make the background stretch to the width of the query text box
-        background_label.place(x=0, y=0, relwidth=1, relheight=1)
-        # query_text_width = self.WorkBench.winfo_reqwidth()
-        # query_text_height = int(self.WorkBench.winfo_reqheight() * 0.3)
-
-        self.query_text = scrolledtext.ScrolledText(self.WorkBench, wrap=tk.WORD, width=80, height=15, font=("Arial", 12))
-        self.query_text.grid(row=0, column=0, padx=100, pady=100, columnspan=2, sticky="nsew")
-
-
-        
-
-
-
+    def create_query_text(self):
+        self.query_text = scrolledtext.ScrolledText(self.WorkBench, width=200, height=200, font=("Arial", 11),undo=True)
+        self.query_text.grid(row=0, column=0, padx=80, pady=50, columnspan=2, sticky="nsew")
+    
     def create_run_button(self):
-        self.execute_button = tk.Button(self.WorkBench, text="Run Code", command=self.runCode, bg=button_color,
+        self.execute_button = tk.Button(self.WorkBench, text="Run Code", command=self.runCode, bg=self.guiTools.button_color,
                                         width = 25, height=2)
-        self.execute_button.bind("<Enter>", on_execute_button_hover)
-        self.execute_button.bind("<Leave>", on_excute_button_leave)
+        self.execute_button.bind("<Enter>",self.guiTools.on_execute_button_hover)
+        self.execute_button.bind("<Leave>", self.guiTools.on_excute_button_leave)
         self.execute_button.grid(row=1, column=0, columnspan=2, sticky="nsew")
 
     def create_test_button(self):
-        self.test_button = tk.Button(self.WorkBench, text="Run TEST", command=self.runTests, bg=button_color,
+        self.test_button = tk.Button(self.WorkBench, text="Run TEST", command=self.runTests, bg=self.guiTools.button_color,
                                      width=50, height=2)
-        self.test_button.bind("<Enter>", on_test_button_hover)
-        self.test_button.bind("<Leave>", on_test_button_leave)
+        self.test_button.bind("<Enter>", self.guiTools.on_test_button_hover)
+        self.test_button.bind("<Leave>", self.guiTools.on_test_button_leave)
         self.test_button.grid(row=2, column=0, columnspan=2, sticky="nsew", pady=(5, 0))
 
     def create_result_text(self):
-        self.result_text = scrolledtext.ScrolledText(self.WorkBench, wrap=tk.WORD, width=80, height=15,
-                                                     font=("Arial", 12))
-        self.result_text.grid(row=3, column=0, padx=100, pady=100, columnspan=2, sticky="nsew")
+        self.result_text = scrolledtext.ScrolledText(self.WorkBench, width=200, height=200,
+                                                     font=("Arial", 11),undo=True)
+        self.result_text.grid(row=3, column=0, padx=80, pady=50, columnspan=2, sticky="nsew")
 
     def runCode(self, event=None):
         try:
             self.result_text.delete(1.0, tk.END)
             query = self.query_text.get("1.0", tk.END)
             lexicalAnalyzer = LexicalAnalyzerClass(query.strip())
-            Lexicaltokens = list(lexicalAnalyzer.analyze_line())
+            Lexicaltokens:list[str] = list(lexicalAnalyzer.analyze_line())
             print("Lexicaltokens are : ", Lexicaltokens)
             result = ""
             if Lexicaltokens[0].lower() == "insert":
@@ -110,7 +102,7 @@ class WorkBenchClass:
                 if(result == "Accepted."):
                     print(table_name)
                     print(columns)
-                    create_ui_table = CreateUITableClass(self.sql_idle_gui_instance.root, table_name, columns, self.sql_idle_gui_instance.notebook)
+                    # create_ui_table = CreateUITableClass(self.sql_idle_gui_instance.root, table_name, columns, self.sql_idle_gui_instance.notebook)
             else:
                 self.show_error(f"The term '{Lexicaltokens[0]}' is not supported by this compiler.")
 
@@ -119,6 +111,29 @@ class WorkBenchClass:
         except Exception as e:
             self.show_error(e)
 
+    def find_in_query_text(self, search_text:str):
+            self.query_text.tag_remove('found', '1.0', tk.END)
+            start_pos = '1.0'
+            while True:
+                start_pos = self.query_text.search(search_text.lower(), start_pos,nocase=True,exact=False, stopindex=tk.END)
+                if not start_pos:
+                    break
+                end_pos = f"{start_pos}+{len(search_text)}c"
+                self.query_text.tag_add('found', start_pos, end_pos)
+                start_pos = end_pos
+            self.query_text.tag_config('found', foreground='black', background='yellow')
+
+    def replace_in_query_text(self, find_text, replace_text):
+        start_pos = '1.0'
+        while True:
+            start_pos = self.query_text.search(find_text.lower(), start_pos,nocase=True,exact=False, stopindex=tk.END)
+            if not start_pos:
+                break
+            end_pos = f"{start_pos}+{len(find_text)}c"
+            self.query_text.delete(start_pos, end_pos)
+            self.query_text.insert(start_pos, replace_text)
+            start_pos = f"{start_pos}+{len(replace_text)}c"
+
     def runTests(self, event=None):
         self.query_text.delete(1.0, tk.END)
         self.result_text.delete(1.0, tk.END)
@@ -126,7 +141,7 @@ class WorkBenchClass:
             tests = get_tests("insert")
             if self.test_value == len(tests):
                 return
-            query = tests[self.test_value]["TEST" + str(self.test_value + 1)]
+            query:str = tests[self.test_value]["TEST" + str(self.test_value + 1)]
             print("checking test", self.test_value, "  :  ", query)
             self.query_text.insert(tk.END, query.strip())
             self.runCode()
