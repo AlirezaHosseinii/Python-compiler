@@ -99,14 +99,13 @@ class CreateTableSyntaxAnalyzerClass:
             raise SyntaxError(f'{self.previous()} Unexpected token:  "{self.current_token}" ')
 
     def constraint_list(self):
-        if self.current_token.upper() in ["PRIMARY", "FOREIGN", "NOT", "UNIQUE"]: # more constraints? 
+        if self.current_token.upper() in ["PRIMARY", "FOREIGN", "NOT", "UNIQUE"]:
             self.constraint()
             while self.current_token == ",":
                 self.constraint()
                 self.consume() 
 
     def check_numeric(self):
-        # print(f"here is{self.current_token.upper()}")
         try:
             float_token = float(self.current_token)
         except ValueError:
@@ -114,7 +113,7 @@ class CreateTableSyntaxAnalyzerClass:
         self.consume()
 
     def data_type(self):
-        if self.current_token.upper() in ["INT", "VARCHAR", "DATE", "FLOAT", "DECIMAL"]:  # more data types? #test of date and float
+        if self.current_token.upper() in ["INT", "VARCHAR", "DATE", "FLOAT", "DECIMAL"]:
             self.consume()
             if self.current_token == "(":
                 self.match("(")
@@ -146,15 +145,12 @@ class CreateTableSyntaxAnalyzerClass:
                 self.check_numeric()
         
     def column_def(self):
-        # print(f"here is{self.current_token.upper()}")
         try:
             self.columns.append(self.current_token)
         except:
             None
         self.match_identifier()
-        # print(f"here is{self.current_token.upper()}")
         self.data_type()
-        # print(f"here is{self.current_token.upper()}")
         while not self.current_token == "," and not self.current_token == ")" :
             self.column_constraint()
 
@@ -162,7 +158,6 @@ class CreateTableSyntaxAnalyzerClass:
         self.column_def()
         while self.current_token == ",":
             self.consume()
-            # print(f"here is{self.current_token.upper()}")
             if not self.current_token.upper() in ["PRIMARY", "FOREIGN", "NOT", "UNIQUE"]:
                 self.column_def()
             else:

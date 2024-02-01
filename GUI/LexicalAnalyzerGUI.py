@@ -39,7 +39,6 @@ class LexicalAnalyzerGUIClass:
         self.result_tree.configure(yscrollcommand=self.scrollbar.set)
         self.scrollbar.grid(row=3, column=2, padx=0 , sticky="nsew")
 
-        # Configure grid to allow resizing
         self.Lexical.grid_rowconfigure(3, weight=1)
         self.Lexical.grid_columnconfigure(0, weight=1)
 
@@ -57,7 +56,7 @@ class LexicalAnalyzerGUIClass:
     def set_dark_background(self):
         pil_image = Image.open('dark_background.jpg')
         tk_image = ImageTk.PhotoImage(pil_image)
-        self.background_label = Label(self.Lexical, image=tk_image, width=800, height=600)
+        self.background_label = Label(self.Lexical, image=tk_image, width=1024, height=1024)
         self.background_label.img = tk_image
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
         self.create_lexical_widgets()  

@@ -14,17 +14,20 @@ sys.path.append('./Python-compiler')
 from SyntaxAnalyzer.InsertCommandSyntaxAnalyzer import InsertCommandSyntaxAnalyzerClass
 from SyntaxAnalyzer.CreateTableSyntaxAnalyzer import CreateTableSyntaxAnalyzerClass
 from LexicalAnalyzerDir.LexicalAnalyzer import LexicalAnalyzerClass
+from SyntaxAnalyzer.AlterTableSyntaxAnlyzer import AlterTableSyntaxAnalyzerClass
 from tests import get_tests
-from createUItableCopy import CreateUITableClass
+from createUItable import CreateUITableClass
 
 
 class WorkBenchClass:
+    sql_idle_gui_instance = None
     def __init__(self, notebook, sql_idle_gui_instance):
-        self.sql_idle_gui_instance = sql_idle_gui_instance
+        WorkBenchClass.sql_idle_gui_instance = sql_idle_gui_instance
         self.notebook = notebook
         self.test_value = 0
         self.guiTools = GUIToolsCLass(self)
         self.create_workbench_tab()
+        self.tables = []
 
     def create_workbench_tab(self):
         self.WorkBench = ttk.Frame(self.notebook)
@@ -94,7 +97,11 @@ class WorkBenchClass:
             if Lexicaltokens[0].lower() == "insert":
                 self.result_text.insert(tk.END, "checking insert query   :  ")
                 syntaxAnalyzer = InsertCommandSyntaxAnalyzerClass(Lexicaltokens)
-                result = syntaxAnalyzer.parse()
+                result, column_list , values_list = syntaxAnalyzer.parse()
+                if(result == "Accepted."):
+                    for table in self.tables:
+                        table.insert_data(table.table_name,values_list) #INSERT INTO Books(BookID, Title) VALUES (a , e);        
+
             elif Lexicaltokens[0].lower() == "create":
                 self.result_text.insert(tk.END, "checking create query   :  ")
                 syntaxAnalyzer = CreateTableSyntaxAnalyzerClass(Lexicaltokens)
@@ -102,7 +109,12 @@ class WorkBenchClass:
                 if(result == "Accepted."):
                     print(table_name)
                     print(columns)
-                    # create_ui_table = CreateUITableClass(self.sql_idle_gui_instance.root, table_name, columns, self.sql_idle_gui_instance.notebook)
+                    create_ui_table = CreateUITableClass(self.sql_idle_gui_instance.root, table_name, columns, self.sql_idle_gui_instance.notebook)
+                    self.tables.append(create_ui_table)
+            elif Lexicaltokens[0].lower() == "alter":
+                self.result_text.insert(tk.END, "checking alter query   :  ")
+                syntaxAnalyzer = AlterTableSyntaxAnalyzerClass(Lexicaltokens)
+                result = syntaxAnalyzer.parse()
             else:
                 self.show_error(f"The term '{Lexicaltokens[0]}' is not supported by this compiler.")
 

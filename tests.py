@@ -1,4 +1,3 @@
-
 tests = {"tests" : [
     {"TEST1" : """
     CREATE TABLE Employees (
@@ -99,6 +98,30 @@ tests = {"tests" : [
     INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
     CONCAT(1,2,3,4,5,6,7,8,9,10)
     , 1);""","status" : False}
+    ],
+"alter" : [
+    {"TEST1" : """ALTER TABLE my_table ADD new_column INT;""","status" : False}
+    ,{"TEST2" : """ALTER TABLE my_table;""","status" : False}
+    ,{"TEST3" : """ALTER TABLE my_table MODIFY existing_column VARCHAR(50);""","status" : False}
+    ,{"TEST4" : """ALTER TABLE my_table ADD new_column INT;""","status" : False}
+    ,{"TEST5" : """
+    ALTER TABLE table_name
+    DROP Column column_name;""","status" : False}
+    ,{"TEST6" : """
+    ALTER TABLE table_name
+    RENAME COLUMN old_name to new_name;""","status" : False}
+    ,{"TEST7" : """
+    ALTER TABLE my_table ADD new_column INT PRIMARY KEY;""","status" : False}
+    ,{"TEST8" : """
+    ALTER TABLE my_table ADD col1 INT, ADD col2 VARCHAR(50);""","status" : False}
+    ,{"TEST9" : """
+    ALTER TABLE my_table MODIFY column existing_column VARCHAR(50) UNIQUE;""","status" : False}
+    ,{"TEST10" : """
+    ALTER TABLE my_table DROP Column column1, DROP column column2;""","status" : False}
+    ,{"TEST11" : """
+    ALTER TABLE my_table MODIFY Column existing_column VARCHAR(50), ADD new_column INT;""","status" : False}
+    ,{"TEST12" : """
+    ALTER TABLE my_table ADD VARCHAR(50);""","status" : False}
     ]
 }
 
@@ -107,4 +130,6 @@ def get_tests(type="create"):
         return tests["tests"]
     elif type == "insert":
         return tests["insert"]
+    elif type == "alter":
+        return tests["alter"]
         

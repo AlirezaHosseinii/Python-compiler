@@ -3,6 +3,9 @@ class InsertCommandSyntaxAnalyzerClass:
         self.tokens = tokens
         self.current_token : str = ""
         self.index = 0
+        self.table_name = ""
+        self.column_lists = []
+        self.values_lists = []
         self.error_messages = []
         self.reserved_keywords = [
             "INSERT", "INTO", "VALUES", "SELECT", "FROM", "WHERE", "GROUP BY",
@@ -91,10 +94,12 @@ class InsertCommandSyntaxAnalyzerClass:
         column_count = 0
         if self.current_token == "(":
             self.consume()
+            self.column_lists.append(self.current_token)
             self.match_identifier()
             column_count += 1
             while self.current_token == ",":
                 self.consume()
+                self.column_lists.append(self.current_token)
                 self.match_identifier()
                 column_count += 1
             self.match(")")
@@ -104,10 +109,12 @@ class InsertCommandSyntaxAnalyzerClass:
         counter = 0
         while self.current_token == "(":
             self.consume()
+            self.values_lists.append(self.current_token)
             self.match_identifier(can_column=True)
             counter +=1
             while self.current_token != ")":
                 self.match(",")
+                self.values_lists.append(self.current_token)
                 self.match_identifier(can_column=True)
                 counter +=1
             if counter != column_count:
@@ -124,6 +131,7 @@ class InsertCommandSyntaxAnalyzerClass:
     def insert_statement(self):
         self.match("INSERT")
         self.match("INTO")
+        self.table_name = self.current_token
         self.match_identifier()
         column_count = self.column_list()
         self.match("VALUES")
@@ -136,6 +144,6 @@ class InsertCommandSyntaxAnalyzerClass:
     def parse(self):
         self.consume()
         if self.insert_statement() == "Accepted.":
-            return "Accepted."
+             return "Accepted.", self.column_lists, self.values_lists
         else:
             raise SyntaxError(f"Error : Not accepted , Why ? ")
