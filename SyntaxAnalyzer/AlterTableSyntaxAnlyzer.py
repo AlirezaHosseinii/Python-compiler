@@ -1,6 +1,4 @@
 import sys
-sys.path.insert(1, 'LexicalAnalyzer')
-from LexicalAnalyzerDir.LexicalAnalyzer import LexicalAnalyzerClass
 
 class AlterTableSyntaxAnalyzerClass:
     def __init__(self, tokens):
@@ -182,9 +180,7 @@ class AlterTableSyntaxAnalyzerClass:
                 self.rename_table()
             else:
                 raise SyntaxError(f"{self.current_token} is not recognized!")
-
                     
-        print("is:" , self.current_token)
         if self.current_token == ";":
             return "Accepted."
         else:
