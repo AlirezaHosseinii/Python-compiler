@@ -97,10 +97,26 @@ class WorkBenchClass:
             if Lexicaltokens[0].lower() == "insert":
                 self.result_text.insert(tk.END, "checking insert query   :  ")
                 syntaxAnalyzer = InsertCommandSyntaxAnalyzerClass(Lexicaltokens)
-                result, column_list , values_list = syntaxAnalyzer.parse()
+                result, column_list , values_list, insert_table_name = syntaxAnalyzer.parse()
+                wasFound = False
                 if(result == "Accepted."):
                     for table in self.tables:
-                        table.insert_data(table.table_name,values_list) #INSERT INTO Books(BookID, Title) VALUES (a , e);        
+                        if table.table_name == insert_table_name:
+                            wasFound = True
+                            selected_columns = table.columns
+                            columns_are_equal = all(item in selected_columns for item in column_list)
+                            if len(selected_columns) == len(column_list) and columns_are_equal:
+                                data_dict = dict(zip(column_list, values_list))
+                                values = []
+                                for selected_column in selected_columns:
+                                    values.append(data_dict.get(selected_column))
+                                table.insert_data(table.table_name,values)
+                            else:
+                                result = f"Got unknown column names"  
+                        
+                            
+                    if wasFound == False:
+                        result = f"Error: No table with {insert_table_name} name was found!"        
 
             elif Lexicaltokens[0].lower() == "create":
                 self.result_text.insert(tk.END, "checking create query   :  ")
@@ -150,7 +166,7 @@ class WorkBenchClass:
         self.query_text.delete(1.0, tk.END)
         self.result_text.delete(1.0, tk.END)
         try:
-            tests = get_tests("insert")
+            tests = get_tests("create")
             if self.test_value == len(tests):
                 return
             query:str = tests[self.test_value]["TEST" + str(self.test_value + 1)]

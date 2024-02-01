@@ -184,6 +184,9 @@ class MenuBarClass:
     def apply_dark_mode(self):
         self.workBench.set_dark_background()
         self.lexical.set_dark_background()
+        tables = self.workBench.tables
+        for table in tables:
+            table.set_dark_background()
         dark_bg = '#1e1e1e' 
         light_fg = '#d4d4d4'
         self.root.configure(bg=dark_bg)
@@ -194,6 +197,9 @@ class MenuBarClass:
     def apply_light_mode(self):
         self.workBench.set_background()
         self.lexical.set_background()
+        tables = self.workBench.tables
+        for table in tables:
+            table.set_background()
         self.root.configure(bg='white')
         self.workBench.query_text.configure(bg='white', fg='black')
         self.workBench.result_text.configure(bg='white', fg='black')

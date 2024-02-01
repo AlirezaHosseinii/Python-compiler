@@ -144,6 +144,6 @@ class InsertCommandSyntaxAnalyzerClass:
     def parse(self):
         self.consume()
         if self.insert_statement() == "Accepted.":
-             return "Accepted.", self.column_lists, self.values_lists
+             return "Accepted.", self.column_lists, self.values_lists, self.table_name
         else:
             raise SyntaxError(f"Error : Not accepted , Why ? ")

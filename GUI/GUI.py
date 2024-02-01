@@ -19,10 +19,12 @@ from createUItable import CreateUITableClass
 class SqlIdleGUI:
     def __init__(self, root):
         self.root = root
+        width = int(self.root.winfo_screenwidth() * 1) 
+        height = int(self.root.winfo_screenheight() * 0.95)
+        self.root.geometry(f"{width}x{height}+0+0")
         label = tk.Label(self.root, text="SQL COMPILER")
         label.pack()
         self.root.title("SQL COMPILER")
-        self.root.geometry('800x600')
         self.notebook = ttk.Notebook(self.root)
         self.notebook.pack(fill='both', expand=True, side='left') 
         self.workBenchTab = WorkBenchClass(self.notebook, self)
