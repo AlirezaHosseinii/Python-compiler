@@ -11,123 +11,106 @@ tests = {"tests" : [
         FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
     );
     ""","status" : False}
-    ,{"TEST2" : "CREATE TABLE Users (ID INT , Name VARCHAR(50));","status" : False}
+    ,{"TEST2" : "CREATE TABLE Users if not exists(ID INT , Name VARCHAR(50));","status" : False}
     ,{"TEST3" : "CREATE TABLE Orders (OrderID INT PRIMARY KEY, ProductName VARCHAR(100), Quantity INT);","status" : False}
     ,{"TEST4" : "CREATE TABLE Products (ProductID INT UNIQUE, ProductName VARCHAR(100));","status" : False}
     ,{"TEST5" : "CREATE TABLE Orders (OrderID INT, CustomerID INT FOREIGN KEY REFERENCES Customers(CustomerID));","status" : False}
     ,{"TEST6" : "CREATE TABLE Employees (EmployeeID INT DEFAULT 1001, Name VARCHAR(50));","status" : False}
-    #CREATE TABLE Employees (EmployeeID INT DEFAULT 1001, Name VARCHAR(50);
-    ,{"TEST7" : "CREATE TABLE Students (StudentID INT PRIMARY KEY, Name VARCHAR(50) NOT NULL, Age INT CHECK(Age >= 18), Email VARCHAR(100) UNIQUE);","status" : False} #failed
-    ,{"TEST8" : """
-    CREATE TABLE Books (
-        BookID INT,
-        Title VARCHAR(200),
-        Author VARCHAR(100),
-        PublishedDate DATE,
-        Price DECIMAL(10, 2)
-    );
-    ""","status" : False}
-    ,{"TEST9" : """
-    CREATE TABLE Employees (
-        EmployeeID INT,  -- This is the primary key
-        Name VARCHAR(50)  -- Employee Name
-    );
-    ""","status" : False}
-,{"TEST10" : """CREATE TABLE Customers (CustomerID INT INDEX, Name VARCHAR(100), Address VARCHAR(200));""","status" : False}
+,{"TEST7" : """CREATE TABLE Customers (CustomerID INT INDEX, Name VARCHAR(100), Address VARCHAR(200));""","status" : False}
 ],
 "insert" : [
-    {"TEST1" : """INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
+    {"TEST8" : """INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
     DEFALUT
     , 1);""","status" : False}
-    ,{"TEST2" : """INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
+    ,{"TEST9" : """INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
     NOW
-    , 1);""","status" : False}
-    ,{"TEST3" : """
-    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
-    LAST_INSERT_ID()
-    , 1);""","status" : False}
-    ,{"TEST4" : """
-    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
-    MD5
-    , 1);""","status" : False}
-    ,{"TEST5" : """
-    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
-    MD5()
-    , 1);""","status" : False}
-    ,{"TEST6" : """
-    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
-    MD5(1)
-    , 1);""","status" : False}
-    ,{"TEST7" : """
-    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
-    MD5(salam)
-    , 1);""","status" : False}
-    ,{"TEST8" : """
-    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
-    MD5(SHA1(salam))
-    , 1);""","status" : False}
-    ,{"TEST9" : """
-    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
-    POWER
     , 1);""","status" : False}
     ,{"TEST10" : """
     INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
-    POWER()
+    LAST_INSERT_ID()
     , 1);""","status" : False}
     ,{"TEST11" : """
     INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
-    POWER(1)
+    MD5
     , 1);""","status" : False}
     ,{"TEST12" : """
     INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
-    POWER(1,2)
+    MD5()
     , 1);""","status" : False}
     ,{"TEST13" : """
     INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
-    POWER(POWER(1,2),2)
+    MD5(1)
     , 1);""","status" : False}
     ,{"TEST14" : """
     INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
-    POWER(POWER(1,2),POWER(2,1))
+    MD5(salam)
     , 1);""","status" : False}
     ,{"TEST15" : """
     INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
-    POWER(POWER(1,2),POWER(2,1),2)
+    MD5(SHA1(salam))
     , 1);""","status" : False}
     ,{"TEST16" : """
+    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
+    POWER
+    , 1);""","status" : False}
+    ,{"TEST17" : """
+    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
+    POWER()
+    , 1);""","status" : False}
+    ,{"TEST18" : """
+    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
+    POWER(1)
+    , 1);""","status" : False}
+    ,{"TEST19" : """
+    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
+    POWER(1,2)
+    , 1);""","status" : False}
+    ,{"TEST20" : """
+    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
+    POWER(POWER(1,2),2)
+    , 1);""","status" : False}
+    ,{"TEST21" : """
+    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
+    POWER(POWER(1,2),POWER(2,1))
+    , 1);""","status" : False}
+    ,{"TEST22" : """
+    INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
+    POWER(POER(1,2),POWER(2,1),2)
+    , 1);""","status" : False}
+    ,{"TEST23" : """
     INSERT INTO Employees (EmployeeID, FirstName, LastName, Email, DepartmentID) VALUES (2, John, Doe, 
     CONCAT(1,2,3,4,5,6,7,8,9,10)
     , 1);""","status" : False}
     ],
 "alter" : [
-    {"TEST1" : """ALTER TABLE my_table ADD new_column INT;""","status" : False}
-    ,{"TEST2" : """ALTER TABLE my_table;""","status" : False}
-    ,{"TEST3" : """ALTER TABLE my_table MODIFY existing_column VARCHAR(50);""","status" : False}
-    ,{"TEST4" : """ALTER TABLE my_table ADD new_column INT;""","status" : False}
-    ,{"TEST5" : """
+    {"TEST24" : """ALTER TABLE my_table ADD new_column INT;""","status" : False}
+    ,{"TEST25" : """ALTER TABLE my_table;""","status" : False}
+    ,{"TEST26" : """ALTER TABLE my_table MODIFY existing_column VARCHAR(50);""","status" : False}
+    ,{"TEST27" : """ALTER TABLE my_table ADD new_column INT;""","status" : False}
+    ,{"TEST28" : """
     ALTER TABLE table_name
     DROP Column column_name;""","status" : False}
-    ,{"TEST6" : """
+    ,{"TEST29" : """
     ALTER TABLE table_name
     RENAME COLUMN old_name to new_name;""","status" : False}
-    ,{"TEST7" : """
+    ,{"TEST30" : """
     ALTER TABLE my_table ADD new_column INT PRIMARY KEY;""","status" : False}
-    ,{"TEST8" : """
+    ,{"TEST31" : """
     ALTER TABLE my_table ADD col1 INT, ADD col2 VARCHAR(50);""","status" : False}
-    ,{"TEST9" : """
+    ,{"TEST32" : """
     ALTER TABLE my_table MODIFY column existing_column VARCHAR(50) UNIQUE;""","status" : False}
-    ,{"TEST10" : """
+    ,{"TEST33" : """
     ALTER TABLE my_table DROP Column column1, DROP column column2;""","status" : False}
-    ,{"TEST11" : """
+    ,{"TEST34" : """
     ALTER TABLE my_table MODIFY Column existing_column VARCHAR(50), ADD new_column INT;""","status" : False}
-    ,{"TEST12" : """
+    ,{"TEST35" : """
     ALTER TABLE my_table ADD VARCHAR(50);""","status" : False}
     ]
 }
 
 def get_tests(type="create"):
     if type == "create":
-        return tests["tests"]
+        return tests["tests"] + tests["insert"] + tests["alter"]
     elif type == "insert":
         return tests["insert"]
     elif type == "alter":

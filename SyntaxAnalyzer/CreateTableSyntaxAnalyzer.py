@@ -1,3 +1,13 @@
+import difflib
+
+def check_command(input_command,correct_command):
+    matcher = difflib.SequenceMatcher(None, input_command, correct_command)
+    match_ratio = matcher.ratio()
+    if match_ratio > 0.8:
+        return f"Did you mean '{correct_command}' instead of '{input_command}'?"
+    else:
+        return None
+
 class CreateTableSyntaxAnalyzerClass:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -23,7 +33,6 @@ class CreateTableSyntaxAnalyzerClass:
             raise SyntaxError(f"Unexpected end of input")
 
             
-
     def previous(self):
         try :
             return f'After  "{self.tokens[self.index - 2]}" '   
@@ -34,8 +43,12 @@ class CreateTableSyntaxAnalyzerClass:
         if self.current_token.upper() == str(expected_token).upper():
             self.consume()
         else:
-               raise SyntaxError(f'{self.previous()} Expected  "{expected_token}"  but found  "{self.current_token}" ')    
-
+               result = check_command(self.current_token.upper(),expected_token)
+               if result is None :
+                    raise SyntaxError(f'{self.previous()} Expected  "{expected_token}"  but found  "{self.current_token}" ')    
+               else :
+                    raise SyntaxError(f'{self.previous()} Expected  "{expected_token}"  but found  "{self.current_token}" \n \
+                                      {result}')    
     def match_identifier(self):
         if self.current_token.isidentifier():
             if self.current_token not in self.reserved_keywords:
@@ -143,6 +156,8 @@ class CreateTableSyntaxAnalyzerClass:
             elif self.current_token == "DEFAULT" :
                 self.consume()
                 self.check_numeric()
+            elif self.current_token == "INDEX" : 
+                self.match("INDEX")
         
     def column_def(self):
         try:
@@ -168,6 +183,10 @@ class CreateTableSyntaxAnalyzerClass:
         self.match("TABLE")
         table_name = self.current_token
         self.match_identifier()
+        if self.current_token.upper() == "IF" :
+            self.match("IF")
+            self.match("NOT")
+            self.match("EXISTS")
         self.match("(")
         self.column_list()
         self.constraint_list()

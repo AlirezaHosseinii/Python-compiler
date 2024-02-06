@@ -1,18 +1,20 @@
 import tkinter as tk
 from tkinter import Label, ttk
 from PIL import Image,ImageTk
-# from GUI.MenuBar import MenuBarClass
+from GUI.GUITools import *
 
 class CreateUITableClass:
-    def __init__(self, master, table_name, columns, notebook):
+    def __init__(self, master, table_name, columns, notebook,current_mode):
         self.master = master
         self.notebook = notebook
         self.columns = columns
         self.table_name = table_name
         self.create_Lexical_tab()
         self.create_table_view(table_name, columns)
-        self.set_background()
-        # if menubarclass.mode == "light" else dark background
+        print("current_mode : ",current_mode)
+        if current_mode == 'dark' :
+            self.set_dark_background()
+        else :self.set_background()
         
     def set_background(self):
         pil_image = Image.open('background.jpg')
@@ -21,6 +23,7 @@ class CreateUITableClass:
         self.background_label:Label = Label(self.TABLE, image=tk_image, width=800, height=600)
         self.background_label.img = tk_image
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        current_mode = 'light'
         self.create_table_view(self.table_name, self.columns)
 
     def set_dark_background(self):
@@ -29,6 +32,7 @@ class CreateUITableClass:
         self.background_label = Label(self.TABLE, image=tk_image, width=800, height=600)
         self.background_label.img = tk_image
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        current_mode = 'dark'
         self.create_table_view(self.table_name, self.columns)
 
     def create_Lexical_tab(self):
@@ -37,7 +41,6 @@ class CreateUITableClass:
 
         
         pil_image = Image.open('background.jpg')
-        pil_image.resize((800, 600), Image.Resampling.LANCZOS)
 
         tk_image = ImageTk.PhotoImage(pil_image)
         

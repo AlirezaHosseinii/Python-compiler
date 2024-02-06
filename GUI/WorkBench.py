@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import Label, ttk, scrolledtext
-from .GUITools import GUIToolsCLass
+from .GUITools import *
 import sys
 from PIL import Image, ImageTk
 
@@ -32,7 +32,7 @@ class WorkBenchClass:
     def create_workbench_tab(self):
         self.WorkBench = ttk.Frame(self.notebook)
         self.notebook.add(self.WorkBench, text="WorkBench")
-        self.set_background()
+        self.set_dark_background()
 
     def create_widgets(self):
         self.create_query_text()
@@ -53,6 +53,7 @@ class WorkBenchClass:
         self.background_label:Label = Label(self.WorkBench, image=tk_image, width=800, height=600)
         self.background_label.img = tk_image
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        current_mode = 'light'
         self.create_widgets()
 
     def set_dark_background(self):
@@ -61,6 +62,7 @@ class WorkBenchClass:
         self.background_label = Label(self.WorkBench, image=tk_image, width=800, height=600)
         self.background_label.img = tk_image
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        current_mode = 'dark'
         self.create_widgets()
         
     def create_query_text(self):
@@ -125,7 +127,8 @@ class WorkBenchClass:
                 if(result == "Accepted."):
                     print(table_name)
                     print(columns)
-                    create_ui_table = CreateUITableClass(self.sql_idle_gui_instance.root, table_name, columns, self.sql_idle_gui_instance.notebook)
+                    print("self.sql_idle_gui_instance.menuBar.mode :" ,self.sql_idle_gui_instance.menuBar.mode.get())
+                    create_ui_table = CreateUITableClass(self.sql_idle_gui_instance.root, table_name, columns, self.sql_idle_gui_instance.notebook,self.sql_idle_gui_instance.menuBar.mode.get())
                     self.tables.append(create_ui_table)
             elif Lexicaltokens[0].lower() == "alter":
                 self.result_text.insert(tk.END, "checking alter query   :  ")

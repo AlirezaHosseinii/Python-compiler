@@ -10,18 +10,18 @@ sys.path.append('../')
 sys.path.append('./')
 sys.path.append('./Python-compiler')
 # from .GUITools import *
-from .WorkBench import WorkBenchClass
 from .LexicalAnalyzerGUI import LexicalAnalyzerGUIClass
 from tkinter.colorchooser import askcolor
 
 class MenuBarClass:
-    def __init__(self, root:tk.Tk,workBench:WorkBenchClass,lexical:LexicalAnalyzerGUIClass):
+    def __init__(self, root:tk.Tk,workBench,lexical:LexicalAnalyzerGUIClass):
         self.root = root
         self.workBench = workBench
         self.lexical = lexical
         self.menuBar = Menu(self.root)
         self.mode = tk.StringVar()
-        self.mode.set('light')
+        self.mode.set('dark')
+        self.mode
         self.root.bind('<Control-r>', self.workBench.runCode)
         self.root.bind('<Control-f>', self.findText)
         self.root.bind('<Control-h>', self.findReplaceText)
@@ -29,13 +29,15 @@ class MenuBarClass:
         self.root.bind('<Control-s>',self.saveSqlFile)
         self.root.bind('<Control-Shift-S>',self.saveSqlFileAs)
         self.root.bind('<Control-q>',self.exitProgram)
+        self.root.bind('<Control-c>',self.copyText)
+        self.root.bind('<Control-x>',self.cutText)
+        self.root.bind('<Control-z>',self.undoText)
+        self.root.bind('<Control-y>',self.redoText)
         self.createFileMenu()
         self.createEditMenu()
         self.createRunMenu()
         self.createModeMenu()
         self.root.config(menu=self.menuBar)
-
-
 
 
     def createRunMenu(self):
@@ -190,8 +192,9 @@ class MenuBarClass:
         dark_bg = '#1e1e1e' 
         light_fg = '#d4d4d4'
         self.root.configure(bg=dark_bg)
-        self.workBench.query_text.configure(bg=dark_bg, fg=light_fg, insertbackground=light_fg)
-        self.workBench.result_text.configure(bg=dark_bg, fg=light_fg, insertbackground=light_fg)
+        self.workBench.query_text.configure(bg=dark_bg, fg='white')
+        self.workBench.result_text.configure(bg=dark_bg, fg='white')
+        self.lexical.text_entry.configure(bg=dark_bg, fg='white')
         self.mode.set('dark')
  
     def apply_light_mode(self):
@@ -203,6 +206,8 @@ class MenuBarClass:
         self.root.configure(bg='white')
         self.workBench.query_text.configure(bg='white', fg='black')
         self.workBench.result_text.configure(bg='white', fg='black')
+        self.lexical.text_entry.configure(bg='white', fg='black')
+        self.mode.set('light')
 
 
         

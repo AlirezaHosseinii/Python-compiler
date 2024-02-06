@@ -1,10 +1,7 @@
 import sys
+global current_mode
+current_mode = 'dark'
 
-
-# def set_shortcuts(root):
-#     root.bind('<Control-c>', on_exit)
-#     root.bind('<Control-f>', findText)
-#     root.bind('<Control-h>', findReplaceText)
 class GUIToolsCLass:
     def __init__(self,workBench):
         self.dark_bg_color = 'black'

@@ -4,6 +4,7 @@ from LexicalAnalyzerDir.LexicalAnalyzer import LexicalAnalyzerClass
 from tkinter import Label, ttk, scrolledtext
 from PIL import Image, ImageTk
 from .WorkBench import WorkBenchClass
+from .GUITools import *
 
 class LexicalAnalyzerGUIClass:
     def __init__(self, root:tk.Tk, notebook,workBench:WorkBenchClass):
@@ -11,7 +12,7 @@ class LexicalAnalyzerGUIClass:
         self.notebook = notebook
         self.workBench = workBench
         self.create_Lexical_tab()
-        self.set_background()
+        self.set_dark_background()
 
     def create_Lexical_tab(self):
         self.Lexical = ttk.Frame(self.notebook)
@@ -51,6 +52,7 @@ class LexicalAnalyzerGUIClass:
         self.background_label:Label = Label(self.Lexical, image=tk_image, width=800, height=600)
         self.background_label.img = tk_image
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        current_mode = 'light'
         self.create_lexical_widgets()
 
     def set_dark_background(self):
@@ -59,6 +61,7 @@ class LexicalAnalyzerGUIClass:
         self.background_label = Label(self.Lexical, image=tk_image, width=1024, height=1024)
         self.background_label.img = tk_image
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        current_mode = 'dark'
         self.create_lexical_widgets()  
 
     def get_text_from_workbench(self):

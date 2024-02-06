@@ -12,10 +12,10 @@ class WelcomeApp:
         width = int(self.master.winfo_screenwidth() * 1) 
         height = int(self.master.winfo_screenheight() * 0.95)
         self.master.geometry(f"{width}x{height}+0+0")
-
-        pil_image = Image.open('dark_background.jpg')
+        pil_image = Image.open('welcome_background.jpg')
+        pil_image.resize((2600,1920))
         tk_image = ImageTk.PhotoImage(pil_image)
-        self.background_label:Label = Label(self.master, image=tk_image, width=800, height=600)
+        self.background_label:Label = Label(self.master, image=tk_image, width=1920, height=1080)
         self.background_label.img = tk_image
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
@@ -44,4 +44,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
